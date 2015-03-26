@@ -2,3 +2,4 @@
 bin
 gen
 lib
+.DS_Store

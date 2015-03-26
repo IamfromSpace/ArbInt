@@ -1,0 +1,280 @@
+#>
+# Source Code for the Arbitrary Integer Library for the
+# Programming Language Wake
+#
+# ArbIntTest.wk
+#
+# Licensed under the MIT license
+# See LICENSE.TXT for details
+#
+# Author: Nathan Fairhurst
+# Revised By:
+#
+##
+
+import Asserts;
+import ArbIntProvider;
+import ArbInt;
+
+@TestClass
+every ArbIntTest is:
+
+	needs ArbIntProvider;
+
+	@Test
+	testFromNumArray(Asserts) {
+		var Num i = 0;
+		var Num j = 0;
+		var Num[] = [];
+		for (i=0; i<20; i+=1) {
+			Num[].push(i);
+			var ArbInt a = ArbInt(Num[]) from ArbIntProvider;
+			for (j=0; j<=i; j+=1) {
+				Asserts.that(a.toNumList()[j])Equals(j);
+			}
+		}
+	}
+	
+	@Test
+	testFromNum(Asserts) {
+		var Num i = 0;
+		for (i=9834; i<9854; i+=1) {
+			var ArbInt a = ArbInt(i) from ArbIntProvider;
+			Asserts.that(a.toNumList()[0])Equals(i);
+		}
+	}
+	
+	@Test
+	testFromString(Asserts) {
+		var ArbInt a = ArbInt('0x07AF29C50111BDB30563F1C40FCCD6950D30FFC6') from ArbIntProvider;
+		Asserts.that(a.toNumList()[0])Equals(0x0D30FFC6);
+		Asserts.that(a.toNumList()[1])Equals(0x0FCCD695);
+		Asserts.that(a.toNumList()[2])Equals(0x0563F1C4);
+		Asserts.that(a.toNumList()[3])Equals(0x0111BDB3);
+		Asserts.that(a.toNumList()[4])Equals(0x07AF29C5);
+		a = ArbInt('0x000B77FA0C72F0B9064422C00B0264320F932191078A47F3015EF76F0B79AA930E9F8F5F') from ArbIntProvider;
+		Asserts.that(a.toNumList()[0])Equals(0x0E9F8F5F);
+		Asserts.that(a.toNumList()[1])Equals(0x0B79AA93);
+		Asserts.that(a.toNumList()[2])Equals(0x015EF76F);
+		Asserts.that(a.toNumList()[3])Equals(0x078A47F3);
+		Asserts.that(a.toNumList()[4])Equals(0x0F932191);
+		Asserts.that(a.toNumList()[5])Equals(0x0B026432);
+		Asserts.that(a.toNumList()[6])Equals(0x064422C0);
+		Asserts.that(a.toNumList()[7])Equals(0x0C72F0B9);
+		Asserts.that(a.toNumList()[8])Equals(0x000B77FA);
+		a = ArbInt('0x00543E6A0F9475060E8C19F60445F35E0A2215260D01FD9108A2BF5A03855EE10FD38B21') from ArbIntProvider;
+		Asserts.that(a.toNumList()[0])Equals(0x0FD38B21);
+		Asserts.that(a.toNumList()[1])Equals(0x03855EE1);
+		Asserts.that(a.toNumList()[2])Equals(0x08A2BF5A);
+		Asserts.that(a.toNumList()[3])Equals(0x0D01FD91);
+		Asserts.that(a.toNumList()[4])Equals(0x0A221526);
+		Asserts.that(a.toNumList()[5])Equals(0x0445F35E);
+		Asserts.that(a.toNumList()[6])Equals(0x0E8C19F6);
+		Asserts.that(a.toNumList()[7])Equals(0x0F947506);
+		Asserts.that(a.toNumList()[8])Equals(0x00543E6A);
+		a = ArbInt('0x036B6B6B09C839BB04C06BE20EA767E70DAF6C6605ACF389075C391B0D382FB102ED8D3D') from ArbIntProvider;
+		Asserts.that(a.toNumList()[0])Equals(0x02ED8D3D);
+		Asserts.that(a.toNumList()[1])Equals(0x0D382FB1);
+		Asserts.that(a.toNumList()[2])Equals(0x075C391B);
+		Asserts.that(a.toNumList()[3])Equals(0x05ACF389);
+		Asserts.that(a.toNumList()[4])Equals(0x0DAF6C66);
+		Asserts.that(a.toNumList()[5])Equals(0x0EA767E7);
+		Asserts.that(a.toNumList()[6])Equals(0x04C06BE2);
+		Asserts.that(a.toNumList()[7])Equals(0x09C839BB);
+		Asserts.that(a.toNumList()[8])Equals(0x036B6B6B);
+		a = ArbInt('0x0EEA25BC00D3C2D0055E0A500236636E0ABF5EFA0A04D8E80580A326') from ArbIntProvider;
+		Asserts.that(a.toNumList()[0])Equals(0x0580A326);
+		Asserts.that(a.toNumList()[1])Equals(0x0A04D8E8);
+		Asserts.that(a.toNumList()[2])Equals(0x0ABF5EFA);
+		Asserts.that(a.toNumList()[3])Equals(0x0236636E);
+		Asserts.that(a.toNumList()[4])Equals(0x055E0A50);
+		Asserts.that(a.toNumList()[5])Equals(0x00D3C2D0);
+		Asserts.that(a.toNumList()[6])Equals(0x0EEA25BC);
+		a = ArbInt('0x085752C00A81C4B5017118CA082282240194B64F') from ArbIntProvider;
+		Asserts.that(a.toNumList()[0])Equals(0x0194B64F);
+		Asserts.that(a.toNumList()[1])Equals(0x08228224);
+		Asserts.that(a.toNumList()[2])Equals(0x017118CA);
+		Asserts.that(a.toNumList()[3])Equals(0x0A81C4B5);
+		Asserts.that(a.toNumList()[4])Equals(0x085752C0);
+		a = ArbInt('0x09080DAE0BC48F310E9A379A09270EF30E37F5450A018DE8081E2F6E0C20F862') from ArbIntProvider;
+		Asserts.that(a.toNumList()[0])Equals(0x0C20F862);
+		Asserts.that(a.toNumList()[1])Equals(0x081E2F6E);
+		Asserts.that(a.toNumList()[2])Equals(0x0A018DE8);
+		Asserts.that(a.toNumList()[3])Equals(0x0E37F545);
+		Asserts.that(a.toNumList()[4])Equals(0x09270EF3);
+		Asserts.that(a.toNumList()[5])Equals(0x0E9A379A);
+		Asserts.that(a.toNumList()[6])Equals(0x0BC48F31);
+		Asserts.that(a.toNumList()[7])Equals(0x09080DAE);
+		a = ArbInt('0x09D6FB4B01DAA34F00E486EC035A9A8D01DBF84003DE90AF') from ArbIntProvider;
+		Asserts.that(a.toNumList()[0])Equals(0x03DE90AF);
+		Asserts.that(a.toNumList()[1])Equals(0x01DBF840);
+		Asserts.that(a.toNumList()[2])Equals(0x035A9A8D);
+		Asserts.that(a.toNumList()[3])Equals(0x00E486EC);
+		Asserts.that(a.toNumList()[4])Equals(0x01DAA34F);
+		Asserts.that(a.toNumList()[5])Equals(0x09D6FB4B);
+		a = ArbInt('0x0D7E05A00C6253FB0DB85A990163804C') from ArbIntProvider;
+		Asserts.that(a.toNumList()[0])Equals(0x0163804C);
+		Asserts.that(a.toNumList()[1])Equals(0x0DB85A99);
+		Asserts.that(a.toNumList()[2])Equals(0x0C6253FB);
+		Asserts.that(a.toNumList()[3])Equals(0x0D7E05A0);
+		a = ArbInt('0x0EA8EEC20B587E1C070E0D3D05420CAD0A470056019A6825') from ArbIntProvider;
+		Asserts.that(a.toNumList()[0])Equals(0x019A6825);
+		Asserts.that(a.toNumList()[1])Equals(0x0A470056);
+		Asserts.that(a.toNumList()[2])Equals(0x05420CAD);
+		Asserts.that(a.toNumList()[3])Equals(0x070E0D3D);
+		Asserts.that(a.toNumList()[4])Equals(0x0B587E1C);
+		Asserts.that(a.toNumList()[5])Equals(0x0EA8EEC2);
+		a = ArbInt('0x035FF8B709B2FE1D0ECE066A0EA46517') from ArbIntProvider;
+		Asserts.that(a.toNumList()[0])Equals(0x0EA46517);
+		Asserts.that(a.toNumList()[1])Equals(0x0ECE066A);
+		Asserts.that(a.toNumList()[2])Equals(0x09B2FE1D);
+		Asserts.that(a.toNumList()[3])Equals(0x035FF8B7);
+	}
+	
+	@Test
+	testToString(Asserts) {
+		var ArbInt a = ArbInt('0xD425A18AC3DE2326') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('0xD425A18AC3DE2326');
+		a = ArbInt('-0x4CFD55C75CBC113578A14DE655C66695A4B5167723B65A9628C8A5DD8815E1B058') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('-0x4CFD55C75CBC113578A14DE655C66695A4B5167723B65A9628C8A5DD8815E1B058');
+		a = ArbInt('0xEAF0585783E4AD06A897DA99561287649E1D6ECDB') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('0xEAF0585783E4AD06A897DA99561287649E1D6ECDB');
+		a = ArbInt('-0x6EC3D834849C237FB54832') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('-0x6EC3D834849C237FB54832');
+		a = ArbInt('0xA8ECC725630709801EBCE3DF23D79E11C5F993494116218651D3EDFCE929483F1') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('0xA8ECC725630709801EBCE3DF23D79E11C5F993494116218651D3EDFCE929483F1');
+		a = ArbInt('0x4B658BC') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('0x4B658BC');
+		a = ArbInt('-0x886392E84C733823CFDA1648F6E6D35890068ED12BB53C8F841DCF9CFF6551F4085A3') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('-0x886392E84C733823CFDA1648F6E6D35890068ED12BB53C8F841DCF9CFF6551F4085A3');
+		a = ArbInt('-0xB1582BF9F7F52757A8BE225569CBBBA9B1FC2FC4') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('-0xB1582BF9F7F52757A8BE225569CBBBA9B1FC2FC4');
+		a = ArbInt('0x94E8B09B3A2DC82F66CADB1939D13C1D35840C848A7') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('0x94E8B09B3A2DC82F66CADB1939D13C1D35840C848A7');
+		a = ArbInt('-0x210128BB557BAF16BE7891B78879EC94608E27464E58') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('-0x210128BB557BAF16BE7891B78879EC94608E27464E58');
+		a = ArbInt('-0x7EA623') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('-0x7EA623');
+		a = ArbInt('0xC8E8964DFAA23C98C0AB2CDA2222244E34CDFFE0B456213292A1457503EB3DC1F') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('0xC8E8964DFAA23C98C0AB2CDA2222244E34CDFFE0B456213292A1457503EB3DC1F');
+		a = ArbInt('0x35E4077E6AA4FCFA657AC48E8D649A291') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('0x35E4077E6AA4FCFA657AC48E8D649A291');
+		a = ArbInt('0x6E0484410F5F2F83513C22570FFC3B5B9234682A894492D655BAA7E739B') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('0x6E0484410F5F2F83513C22570FFC3B5B9234682A894492D655BAA7E739B');
+		a = ArbInt('-0x14163E84373A7194F62DB37FEF14F910974051CB8A5B56951DE31D79D67') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('-0x14163E84373A7194F62DB37FEF14F910974051CB8A5B56951DE31D79D67');
+		a = ArbInt('-0xA5C44BAC1492D705D94B') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('-0xA5C44BAC1492D705D94B');
+		a = ArbInt('-0xBBA3B37AFE4FC1FDC9750333662E070C7376835950E9159E9376DF512D5220419B42A402F4751') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('-0xBBA3B37AFE4FC1FDC9750333662E070C7376835950E9159E9376DF512D5220419B42A402F4751');
+		a = ArbInt('0xF52D9E82BA8882A01589E2514E7CC41512A06E1DD4367B6DED74FAA7A68FF68D3A3') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('0xF52D9E82BA8882A01589E2514E7CC41512A06E1DD4367B6DED74FAA7A68FF68D3A3');
+		a = ArbInt('0x2A21A9AD9EFD2A152804010300F5EFA2429F') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('0x2A21A9AD9EFD2A152804010300F5EFA2429F');
+		a = ArbInt('0x6079E8675B2480DFD11C1') from ArbIntProvider;
+		Asserts.that(a.toString())Equals('0x6079E8675B2480DFD11C1');
+	}
+	
+	@Test
+	testRemovePadding(Asserts) {
+		var ArbInt a = ArbInt([1,0]) from ArbIntProvider;
+		a.removePadding();
+		Asserts.that(a.toNumList().getSize())Equals(1);
+		a = ArbInt([-2147483648,-1]) from ArbIntProvider;
+		a.removePadding();
+		Asserts.that(a.toNumList().getSize())Equals(1);
+		a = ArbInt([1,-1]) from ArbIntProvider;
+		a.removePadding();
+		Asserts.that(a.toNumList().getSize())Equals(2);
+		a = ArbInt([-2147483648,0]) from ArbIntProvider;
+		a.removePadding();
+		Asserts.that(a.toNumList().getSize())Equals(2);
+		a = ArbInt([1,0,0,0]) from ArbIntProvider;
+		a.removePadding();
+		Asserts.that(a.toNumList().getSize())Equals(1);
+		a = ArbInt([-2147483648,-1,-1,-1]) from ArbIntProvider;
+		a.removePadding();
+		Asserts.that(a.toNumList().getSize())Equals(1);
+		a = ArbInt([1,-1,-1,-1]) from ArbIntProvider;
+		a.removePadding();
+		Asserts.that(a.toNumList().getSize())Equals(2);
+		a = ArbInt([-2147483648,0,0,0]) from ArbIntProvider;
+		a.removePadding();
+		Asserts.that(a.toNumList().getSize())Equals(2);
+		a = ArbInt([1,1,1,0]) from ArbIntProvider;
+		a.removePadding();
+		Asserts.that(a.toNumList().getSize())Equals(3);
+		a = ArbInt([0,0,-2147483648,-1]) from ArbIntProvider;
+		a.removePadding();
+		Asserts.that(a.toNumList().getSize())Equals(3);
+		a = ArbInt([1,1,1,-1]) from ArbIntProvider;
+		a.removePadding();
+		Asserts.that(a.toNumList().getSize())Equals(4);
+		a = ArbInt([0,0,-2147483648,0]) from ArbIntProvider;
+		a.removePadding();
+		Asserts.that(a.toNumList().getSize())Equals(4);
+	}
+	
+	@Test
+	testAdd(Asserts) {
+		var ArbInt a = ArbInt('0x29EF868BD93898B8B9F5E074EEC5A037E444F6A4C90F78') from ArbIntProvider;
+		var ArbInt b = ArbInt('0x2860EF4F60A2DD0BF8DFDE24028AA792A') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0x29EF868BD9389B3EC8EAD67F1C965FC5E22736CD7388A2');
+		a = ArbInt('0x5A5D5BFAF933D8B7440B7AB2EC9A4C8409C0ED440328C9A8E20B0BE62A219A0C862BEA92E873C1E8') from ArbIntProvider;
+		b = ArbInt('0xD9223E00C43053E61E2ED531F4CF198B6620BDE65D8EE4C8167A160A9F94600E75E1DDB6') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0x5A5D5BFBD25616B8083BCE990AC921B5FE9006CF6949878F3F99F0AE409BB01725C04AA15E559F9E');
+		a = ArbInt('0xF0ABBAE561358330BCAD91FBE41F4CE3D13CA3584087911D0733DADB84788') from ArbIntProvider;
+		b = ArbInt('0xEB') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0xF0ABBAE561358330BCAD91FBE41F4CE3D13CA3584087911D0733DADB84873');
+		a = ArbInt('0x4B2034110D5E46C341C8652ED7B5CE83455F6A03B102827CC114255B7239B321BE401F9') from ArbIntProvider;
+		b = ArbInt('0x74A4F4B655B5CF3D1503E486CF4E5765E915B3EBCC74') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0x4B2034110D5E46C341C8652ED7BD18D290C4C560A4D3D2BB09811A40E898447CFCFCE6D');
+		a = ArbInt('0xCD06D4DF622CAFDD0CECC8F4604') from ArbIntProvider;
+		b = ArbInt('0x176DF070BA763C4BE822B17E9839B8AB9AB931F6B67D69D53A4EAD00BA58F6E8FE2421092FF0701') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0x176DF070BA763C4BE822B17E9839B8AB9AB931F6B67D69D53A4F7A078F385915AE012DF5F8E4D05');
+		a = ArbInt('0x5BF3B8A') from ArbIntProvider;
+		b = ArbInt('0x67D1693B706CABB5A74C6227BA4A11F6A9B2D0C19BB58F4E10F536FC') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0x67D1693B706CABB5A74C6227BA4A11F6A9B2D0C19BB58F4E16B47286');
+		a = ArbInt('0xAFDFBA7E2308DC9C83D01178787EF5BF9874CC5F29D7E465FF1D74B374F278DAC93E3') from ArbIntProvider;
+		b = ArbInt('0x7B2177231F0AAF4CBCB552AC94E25046') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0xAFDFBA7E2308DC9C83D01178787EF5BF9874D411414A1656AA12407ECA1D4228EE429');
+		a = ArbInt('0x897CAA9705748792EBB8CC969DFDD602C01D8BEA123DB03FE') from ArbIntProvider;
+		b = ArbInt('0x24A0DAFC28CEB') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0x897CAA9705748792EBB8CC969DFDD602C01DB08AED39D90E9');
+		a = ArbInt('0x1640EC6C997CEFB2E83885B4908061FCF08DB78DE5664EC1CE5E13A481A44B5E27B3') from ArbIntProvider;
+		b = ArbInt('0x9F68F64EE9A3B68E1FA94A6412031F93BB13E0A06CCBE46028B6B9D') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0x1640EC6C997CF9A9779D744ECBE943F78533F8AE175F8A730C681A713FEA4DE99350');
+		a = ArbInt('0x896F3FCCDD77B3E77A0EDEF3D8CD6A6E04D6E925B4DCBDA4328E87CCA77A39192') from ArbIntProvider;
+		b = ArbInt('0xA8508C2175F4D2A12F3A9B102E7E47A5487319460407DC835C7B1E221B656DBBFFBC87') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0xA85094B869F1A078AA7912B11C6D85321F19F993729A37D12855614B03E23833A34E19');
+		a = ArbInt('0xB22C141066973810B8C0472FF9E') from ArbIntProvider;
+		b = ArbInt('0x4CF410E84CCB2FC147AD55606652C58') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0x4CF4C31460DB96587FBE0E20AD82BF6');
+		a = ArbInt('0x5E708179B5DF49AD950EC70123912047FDC7F6F5AF25B59EC9AE3226664E34DAE58B846D58A4B78') from ArbIntProvider;
+		b = ArbInt('0xBEB199722C213538400D27C1D86F451662D603E31875B92394277E53D353B73BB19B712AED0316') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0x6A5B9B10D8A15D01190F997D4118149963F55733E0AD113102F0AA0BA383704EA0A53B800774E8E');
+		a = ArbInt('0x3F7F5A4B8A17F62BF8500C7112A240') from ArbIntProvider;
+		b = ArbInt('0x676F74156DC66BD0474FDBC7825E6E09C35444C3083849775D57BF7607BFB1CB3642A705A87873') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0x676F74156DC66BD0474FDBC7825E6E09C35444C3083849779CD719C191D7A7F72E92B376BB1AB3');
+		a = ArbInt('0xD84C95026995EA9F473FF75D') from ArbIntProvider;
+		b = ArbInt('0x7875DFE8455D52843AA9671143512BAB0146F1219AC260C144956BBC6CC2952B6ECBF0471E9B') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0x7875DFE8455D52843AA9671143512BAB0146F1219AC260C14496440901C4FEC1596B378715F8');
+		a = ArbInt('0xDA980BCB37986BB6305151F271F8808697B198F8DAEBB2FF8565A') from ArbIntProvider;
+		b = ArbInt('0x3A7A4CA3824EBBF') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0xDA980BCB37986BB6305151F271F8808697B1993355385681D4219');
+		a = ArbInt('0xF57770A0975D72B305E14BFF75C280F84790C1990763A1F2B6B3') from ArbIntProvider;
+		b = ArbInt('0x572EC0013011A18BD64F40A5A66EC3D306AF671887884712009E') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0x14CA630A1C76F143EDC308CA51C3144CB4E4028B18EEBE904B751');
+		a = ArbInt('0x2B6E44AB2F') from ArbIntProvider;
+		b = ArbInt('0xE1FB0B3407FFF2BF0E896C6D10B3E6E4828703CE70729B59DE1EAC7BDE6A26208F5BC570') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0xE1FB0B3407FFF2BF0E896C6D10B3E6E4828703CE70729B59DE1EAC7BDE6A264BFDA0709F');
+		a = ArbInt('0xB61FCAD6B15A45C82C1D4524B0B71A5AE955C4B7C96EFA2D912BE9B3C8A576BCBA83855BE4B82E5') from ArbIntProvider;
+		b = ArbInt('0x8081AEE743B820A7A40E74212FF9642CDE0D1D6FAD27CDFA017F20A68CE2448083FACE414') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0xB61FCB5733092D0BE43DECC8BF2B3B8AE2B9F195D68C69DAB8F9E3B547C61D499CC805DFDF866F9');
+		a = ArbInt('0x7B9A8A3ED1FEF3B6BC3CFC7319BDE0F95B2B32BAD5ADDB1DBA51EDFD14C0F78A3F7B') from ArbIntProvider;
+		b = ArbInt('0xD6111A18B898D410CF8F214A346C36E895E21F3BC0A63387E4A7DF4') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0x7B9A8A3ED1FF0117CDDE87FCA6FEEDF24D3FD601991C647BDC45AA0777F975D4BD6F');
+		a = ArbInt('0x130DFA06D8A7B48B1D31553ED83A362E9E74A482092') from ArbIntProvider;
+		b = ArbInt('0xBE98EB6D0C02B90F858DD2D304454999D22A59B76ECC0C50B20C6BEE0036') from ArbIntProvider;
+		Asserts.that(a.add(b).toString())Equals('0xBE98EB6D0C02B90F86BEB27371CFC4E283FD6F0B5C4FAFB39BF3B63620C8');
+	}

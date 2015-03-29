@@ -116,6 +116,14 @@ every ArbInt is:
 		return ArbInt;
 	}
 	
+	ArbInt -- bitNot() {
+		var not Num[] = [];
+		for (var Num i=0; i<Num[].getSize();i+=1) {
+			not.push(~Num[i]);
+		}
+		return ArbInt(not) from this;
+	}
+	
 	//Uses Closures for code reuse.  Intended for any two input bitwise logic gate.
 	ArbInt -- bitGate(ArbInt other, Num -- fn(Num, Num) op) {
 		var Num i = 0;

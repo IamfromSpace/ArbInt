@@ -220,6 +220,30 @@ every ArbIntTest is:
 	}
 	
 	@Test
+	testBitNot(Asserts) {
+		var ArbInt a = ArbInt('0xF8BF6535088277433240B8ABE1') from ArbIntProvider;
+		Asserts.that(a.bitNot().toString())Equals('-0xF8BF6535088277433240B8ABE2');
+		a = ArbInt('0x1434A43') from ArbIntProvider;
+		Asserts.that(a.bitNot().toString())Equals('-0x1434A44');
+		a = ArbInt('0xD55E75E6E892DBD5A0F97486A5665CA8B26') from ArbIntProvider;
+		Asserts.that(a.bitNot().toString())Equals('-0xD55E75E6E892DBD5A0F97486A5665CA8B27');
+		a = ArbInt('-0x90DE6A101D482253B4C6A069EAF1878D6D14D02B9CAABBB1C951A347100B23E9652BC9A5E38FA') from ArbIntProvider;
+		Asserts.that(a.bitNot().toString())Equals('0x90DE6A101D482253B4C6A069EAF1878D6D14D02B9CAABBB1C951A347100B23E9652BC9A5E38F9');
+		a = ArbInt('-0x7BA34B44B1E1E3B1304AC0C86D75E65CE10215A') from ArbIntProvider;
+		Asserts.that(a.bitNot().toString())Equals('0x7BA34B44B1E1E3B1304AC0C86D75E65CE102159');
+		a = ArbInt('-0x5E1065559A1BA0D13A75AD52596B8D97F01CD8CAAAAF96613F8D43F7ADFAFB713') from ArbIntProvider;
+		Asserts.that(a.bitNot().toString())Equals('0x5E1065559A1BA0D13A75AD52596B8D97F01CD8CAAAAF96613F8D43F7ADFAFB712');
+		a = ArbInt('-0x199CDF0BD4BAF27') from ArbIntProvider;
+		Asserts.that(a.bitNot().toString())Equals('0x199CDF0BD4BAF26');
+		a = ArbInt('0x46BAF8DAF66D059ADBD5B50EC202616021851') from ArbIntProvider;
+		Asserts.that(a.bitNot().toString())Equals('-0x46BAF8DAF66D059ADBD5B50EC202616021852');
+		a = ArbInt('0x341500755') from ArbIntProvider;
+		Asserts.that(a.bitNot().toString())Equals('-0x341500756');
+		a = ArbInt('-0xC75B5A64849D84660AFB7') from ArbIntProvider;
+		Asserts.that(a.bitNot().toString())Equals('0xC75B5A64849D84660AFB6');
+	}
+	
+	@Test
 	testBitAnd(Asserts) {
 		var ArbInt a = ArbInt('-0xE621FAD52E4442C695EFE8B155AD93038ADA0A0250A2101CBB52190C57489784F2201C5A01334C6A') from ArbIntProvider;
 		var ArbInt b = ArbInt('-0xFF') from ArbIntProvider;

@@ -47,6 +47,17 @@ def testOp2(op,aMin=1,aMax=80,bMin=1,bMax=80,aSigned=True, bSigned=True):
         
     return "\t\ta = ArbInt('" + a + "') from ArbIntProvider;\n\t\tAsserts.that(a."+ op.wakeMethod + "("+ b +").toString())Equals('" + c + "');"
 
+def testOp3(op,aMin=1,aMax=80,bMin=1,bMax=80,aSigned=True, bSigned=True):
+    a = getRandomHexNumber(aMin, aMax,aSigned)
+    cNum = op.pyOp(int(a,16))
+    if cNum >= 0:
+        c = "0x" + "{0:x}".format(cNum).upper()
+    else:
+        c = "-0x" + "{0:x}".format(abs(cNum)).upper()
+        
+    return "\t\ta = ArbInt('" + a + "') from ArbIntProvider;\n\t\tAsserts.that(a."+ op.wakeMethod + "().toString())Equals('" + c + "');"
+
+
 
 def getRandomHexNumber(a,b,signed=True):
     if signed and random.randint(0,1):
@@ -67,6 +78,7 @@ class Operation:
         self.pyOp = pyOp
         self.wakeMethod = wakeMethod
 
+bitNotOp = Operation(lambda a: ~a, "bitNot")
 bitOrOp = Operation(lambda a, b: a | b, "bitOr")
 bitAndOp = Operation(lambda a, b: a & b, "bitAnd")
 bitXorOp = Operation(lambda a, b: a ^ b, "bitXor")

@@ -116,6 +116,140 @@ every ArbInt is:
 		return ArbInt;
 	}
 	
+	//Uses Closures for code reuse.  Intended for any two input bitwise logic gate.
+	ArbInt -- bitGate(ArbInt other, Num -- fn(Num, Num) op) {
+		var Num i = 0;
+		
+		var Num[] a = [];
+		var Num[] b = [];
+	
+		if (Num[].getSize() > other.toNumList().getSize()) {
+			a = Num[];
+			b = other.toNumList();
+		} else {
+			b = Num[];
+			a = other.toNumList();			
+		}
+		var Num[] and = [];
+		
+		var Num mostWords = a.getSize();
+		
+		var Num pad = 0;
+		if ((b[b.getSize()-1] & leftBit) == leftBit) {
+			pad = -1;
+		}
+		
+		for (i=0; i<mostWords; i+=1) {
+			if (i < b.getSize()) {
+				and.push(op(a[i], b[i]));
+			} else {
+				and.push(op(a[i], pad));
+			}
+		}
+
+		var ArbInt = ArbInt(and) from this;
+		ArbInt.removePadding();
+		
+		return ArbInt;
+	}
+	
+	ArbInt -- bitAnd(ArbInt other) {
+		return bitGate(other, {a, b => a & b});
+	}
+	
+	ArbInt -- bitOr(ArbInt other) {
+		return bitGate(other, {a, b => a | b});
+	}
+	
+	ArbInt -- bitXor(ArbInt other) {
+		return bitGate(other, {a, b => a ^ b});
+	}
+	
+	ArbInt -- shiftRight(Num amount) {
+		var Num i = 0;
+		
+		var Num[] shifted = [];
+		
+		var Num pad = 0;
+		if ((leftBit & Num[Num[].getSize() - 1]) == leftBit) {
+			pad = -1;
+		}
+	
+		var Num wordShift = (amount / 32).floor();					//FORCES 32 BIT
+		if (wordShift < Num[].getSize()) {
+			var Num bitShift = amount % 32;							//FORCES 32 BIT
+			var Num opBitShift = 0;
+			var Num mask = 0;
+			if (bitShift != 0) {
+				opBitShift = 32 - bitShift;
+				mask = ~(-1 << (opBitShift));
+			}
+
+			for (i=0; i<Num[].getSize(); i+=1) {
+				shifted.push(Num[i]);
+			}
+
+			shifted.push(pad);
+		
+			for (i=0; i<Num[].getSize()-wordShift; i+=1) {
+				shifted[i] = (shifted[i+wordShift] >> bitShift) & mask;
+				shifted[i] = shifted[i] | (shifted[i+wordShift+1] << (opBitShift));
+			}
+			for (i=Num[].getSize()-wordShift; i<Num[].getSize(); i+=1) {
+				shifted[i] = pad;
+			}
+		} else {
+			shifted = [pad];
+		}
+		
+		var ArbInt = ArbInt(shifted) from this;
+		ArbInt.removePadding();
+		
+		return ArbInt;
+	}
+	
+	ArbInt -- shiftLeft(Num amount) {
+		var Num i = 0;
+		
+		var Num[] shifted = [];
+		
+		var Num pad = 0;
+		if ((leftBit & Num[Num[].getSize() - 1]) == leftBit) {
+			pad = -1;
+		}
+	
+		var Num wordShift = (amount / 32).floor();					//FORCES 32 BIT
+		var Num bitShift = amount % 32;							//FORCES 32 BIT
+		var Num mask = ~(-1 << bitShift);
+		var Num opBitShift = 0;
+		if (bitShift !=0) {
+			opBitShift = 32 - bitShift;
+		}
+
+		for (i=0; i<Num[].getSize(); i+=1) {
+			shifted.push(Num[i]);
+		}
+
+		for (i=0; i<wordShift+1; i+=1) {
+			shifted.push(pad);
+		}
+
+		for (i=shifted.getSize()-1; i>=wordShift+1; i-=1) {
+			shifted[i] = shifted[i-wordShift] << bitShift;
+			shifted[i] = shifted[i] | ((shifted[i-wordShift-1] >> opBitShift) & mask);
+		}
+		shifted[wordShift] = shifted[0] << bitShift;
+
+		for (i=wordShift-1; i>=0; i-=1) {
+			shifted[i] = 0;
+		}
+		
+		var ArbInt = ArbInt(shifted) from this;
+		ArbInt.removePadding();
+		
+		return ArbInt;
+	}
+	
 	removePadding() {						//Should maybe be a helper class for testing purposes?
 		var Num i = 0;
 		var Num wordCount = Num[].getSize();
@@ -185,7 +319,7 @@ every ArbInt is:
 			}
 		}
 		
-		var Num chopAt = 0;
+		var Num chopAt = Text.getSize()-1;
 		for (i=0; i < Text.getSize(); i+=1) {
 			if (Text.substr(i,i+1) != '0') {
 				chopAt = i;

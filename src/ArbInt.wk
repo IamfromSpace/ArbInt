@@ -2,7 +2,7 @@
 # Source Code for the Arbitrary Integer Library for the
 # Programming Language Wake
 #
-# ArbIntTest.wk
+# ArbInt.wk
 #
 # Licensed under the MIT license
 # See LICENSE.TXT for details
@@ -14,8 +14,8 @@
 
 every ArbInt is:
 	
-	//ArbInt is an Integer of Arbitrary Size.  It is a Little Endian array of Nums
-	//with 32(?) bit words (the nums themselves are big endian).
+	//ArbInt is an Integer of Arbitrary Size.  It is stored as a Little Endian array of Nums
+	//with 32(?) bit words (and the nums themselves are big endian).
 
 	needs Num[];
 	
@@ -24,7 +24,7 @@ every ArbInt is:
 	with Num leftBit = 1 << 31;										//FORCES 32 BIT
 	with Num rightBit = 1;
 	
-	ArbInt -- add(ArbInt other) {
+	Num[] -- add(Num[] other) {
 		//Addition with only bitwise operators is fairly simple
 		//First, a ^ b naively sums a, b, but ignores when the 1 is carried.
 		//Then, (a & b) << 1 is the carried result, previously ignored.
@@ -34,7 +34,7 @@ every ArbInt is:
 		
 		//define our variables
 		var Num[] a = Num[];
-		var Num[] b = other.toNumList();
+		var Num[] b = other;
 		
 		var sum Num[] = [];
 		var carry Num[] = [];
@@ -110,10 +110,34 @@ every ArbInt is:
 			}
 		}
 		
-		var ArbInt = ArbInt(sum) from this;
-		ArbInt.removePadding();
+		return sum;
+	}
+	
+	ArbInt -- add(ArbInt other) {
+		return finalizeArbIntFromNumList(add(other.toNumList()));
+	}
+	
+	private Num[] -- mult(other Num[]) {
+		var Num i = 0;
+		var Num j = 0;
 		
-		return ArbInt;
+		var Num[] result = [0];
+		var Num thisBit = 0;
+		
+		for (i=0; i<other.getSize(); i+=1) {
+			for (j=0; j<32; i+=1) { 								//forces 32 bit
+				thisBit = 1 << j;
+				if ((other[i] & thisBit) == thisBit) {
+					result = this.shiftLeft(i*32 + j).add(result);		//Forces 32 bit 
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	ArbInt -- mult(ArbInt other) {
+		return finalizeArbIntFromNumList(mult(other.toNumList()));
 	}
 	
 	ArbInt -- bitNot() {
@@ -124,21 +148,21 @@ every ArbInt is:
 		return ArbInt(not) from this;
 	}
 	
-	//Uses Closures for code reuse.  Intended for any two input bitwise logic gate.
-	ArbInt -- bitGate(ArbInt other, Num -- fn(Num, Num) op) {
+	private Num[] -- bitGate(Num[] other, Num -- fn(Num, Num) op) {
+		//Uses Closures for code reuse.  Intended for any two input bitwise logic gate.
 		var Num i = 0;
 		
 		var Num[] a = [];
 		var Num[] b = [];
-	
-		if (Num[].getSize() > other.toNumList().getSize()) {
+		var Num[] result = [];
+		
+		if (Num[].getSize() >= other.getSize()) {
 			a = Num[];
-			b = other.toNumList();
+			b = other;
 		} else {
+			a = other;
 			b = Num[];
-			a = other.toNumList();			
 		}
-		var Num[] and = [];
 		
 		var Num mostWords = a.getSize();
 		
@@ -149,31 +173,40 @@ every ArbInt is:
 		
 		for (i=0; i<mostWords; i+=1) {
 			if (i < b.getSize()) {
-				and.push(op(a[i], b[i]));
+				result.push(op(a[i], b[i]));
 			} else {
-				and.push(op(a[i], pad));
+				result.push(op(a[i], pad));
 			}
 		}
 
-		var ArbInt = ArbInt(and) from this;
-		ArbInt.removePadding();
-		
-		return ArbInt;
+		return result;
 	}
-	
-	ArbInt -- bitAnd(ArbInt other) {
+
+	private Num[] -- bitAnd(Num[] other) {
 		return bitGate(other, {a, b => a & b});
 	}
 	
-	ArbInt -- bitOr(ArbInt other) {
+	private Num[] -- bitOr(Num[] other) {
 		return bitGate(other, {a, b => a | b});
 	}
 	
-	ArbInt -- bitXor(ArbInt other) {
+	private Num[] -- bitXor(Num[] other) {
 		return bitGate(other, {a, b => a ^ b});
 	}
 	
-	ArbInt -- shiftRight(Num amount) {
+	ArbInt -- bitAnd(ArbInt other) {
+		return finalizeArbIntFromNumList(bitGate(other.toNumList(), {a, b => a & b}));
+	}
+	
+	ArbInt -- bitOr(ArbInt other) {
+		return finalizeArbIntFromNumList(bitGate(other.toNumList(), {a, b => a | b}));
+	}
+	
+	ArbInt -- bitXor(ArbInt other) {
+		return finalizeArbIntFromNumList(bitGate(other.toNumList(), {a, b => a ^ b}));
+	}
+	
+	private Num[] -- shiftRightNumList(Num amount) {
 		var Num i = 0;
 		
 		var Num[] shifted = [];
@@ -210,13 +243,14 @@ every ArbInt is:
 			shifted = [pad];
 		}
 		
-		var ArbInt = ArbInt(shifted) from this;
-		ArbInt.removePadding();
-		
-		return ArbInt;
+		return shifted;
 	}
 	
-	ArbInt -- shiftLeft(Num amount) {
+	ArbInt -- shiftRight(Num amount) {
+		return finalizeArbIntFromNumList(shiftRightNumList(amount));
+	}
+	
+	private Num[] -- shiftLeftNumList(Num amount) {
 		var Num i = 0;
 		
 		var Num[] shifted = [];
@@ -227,7 +261,7 @@ every ArbInt is:
 		}
 	
 		var Num wordShift = (amount / 32).floor();					//FORCES 32 BIT
-		var Num bitShift = amount % 32;							//FORCES 32 BIT
+		var Num bitShift = amount % 32;								//FORCES 32 BIT
 		var Num mask = ~(-1 << bitShift);
 		var Num opBitShift = 0;
 		if (bitShift !=0) {
@@ -252,7 +286,15 @@ every ArbInt is:
 			shifted[i] = 0;
 		}
 		
-		var ArbInt = ArbInt(shifted) from this;
+		return shifted;
+	}
+	
+	ArbInt -- shiftLeft(Num amount) {
+		return finalizeArbIntFromNumList(shiftLeftNumList(amount));
+	}
+	
+	ArbInt -- finalizeArbIntFromNumList(Num[] a) {
+		var ArbInt = ArbInt(a) from this;
 		ArbInt.removePadding();
 		
 		return ArbInt;
@@ -281,6 +323,10 @@ every ArbInt is:
 			}
 			Num[] = final;
 		}
+	}
+	
+	Num -- wordCount() {
+		return Num[].getSize();
 	}
 
 	Num[] -- toNumList() {

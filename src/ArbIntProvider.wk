@@ -84,4 +84,5 @@ every ArbIntProvider is:
         },
         ArbInt <- (Num) {
             return ArbInt([Num]) from this;
-        };
+        },
+		ArbIntBitManipulator;

@@ -13,10 +13,14 @@
 ##
 
 import ArbInt;
+import ArbIntBitManipulator;
 
 every ArbIntProvider is:
 
-    provides ArbInt <- ArbInt(?Num[]),
+    provides 
+		ArbIntBitManipulator,
+		ArbIntProvider <- { return this; },
+		ArbInt <- ArbInt(?Num[]),
         ArbInt <- (Text) {
 			var Num[] = [];
 			var Num i = 0;
@@ -75,7 +79,7 @@ every ArbIntProvider is:
 				}
 				
 				var ArbInt = ArbInt(Num[]) from this;
-				ArbInt.removePadding();
+				//Doesn't remove padding
 				
 				return ArbInt;
 			} else {
@@ -84,5 +88,4 @@ every ArbIntProvider is:
         },
         ArbInt <- (Num) {
             return ArbInt([Num]) from this;
-        },
-		ArbIntBitManipulator;
+        };

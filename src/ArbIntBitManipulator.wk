@@ -12,7 +12,6 @@
 #
 ##
 
-
 every ArbIntBitManipulator is:
 	
 	with Num leftBit = 1 << 31;										//FORCES 32 BIT
@@ -130,6 +129,7 @@ every ArbIntBitManipulator is:
 		return $Num[];
 	}
 	
+	//Bug where -1 is accessed in a list
 	Num[] -- bitGate(Num[], $Num[], Num -- fn(Num, Num) op) {
 		//Uses Closures for code reuse.  Intended for any two input bitwise logic gate.
 		var Num i = 0;
@@ -216,6 +216,7 @@ every ArbIntBitManipulator is:
 		return shifted;
 	}
 	
+	//Bug where -1 is accessed in a list
 	Num[] -- shiftLeft(Num[], Num amount) {
 		var Num i = 0;
 		

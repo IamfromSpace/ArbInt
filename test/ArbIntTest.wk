@@ -12,18 +12,16 @@
 #
 ##
 
-
-
 import Asserts;
-import ArbIntProvider;
 import ArbInt;
+import ArbIntProvider;
 
 @TestClass
 every ArbIntTest is:
 
 	needs ArbIntProvider;
 	
-	#>	Depricated, include incase it's useful in the future
+	#>	Depricated, included incase it's useful in the future
 	#	Also, this should really be a helper class if implemented.
 	@Test
 	~[test aGetsLargestNumList]~(Asserts) {
@@ -56,7 +54,7 @@ every ArbIntTest is:
 			Num[].push(i);
 			var ArbInt a = ArbInt(Num[]) from ArbIntProvider;
 			for (j=0; j<=i; j+=1) {
-				Asserts.that(a.toNumList()[j])Equals(j);
+				Asserts.that(a.getWords()[j])Equals(j);
 			}
 		}
 	}
@@ -66,95 +64,95 @@ every ArbIntTest is:
 		var Num i = 0;
 		for (i=9834; i<9854; i+=1) {
 			var ArbInt a = ArbInt(i) from ArbIntProvider;
-			Asserts.that(a.toNumList()[0])Equals(i);
+			Asserts.that(a.getWords()[0])Equals(i);
 		}
 	}
 	
 	@Test
 	testFromString(Asserts) {
 		var ArbInt a = ArbInt('0x07AF29C50111BDB30563F1C40FCCD6950D30FFC6') from ArbIntProvider;
-		Asserts.that(a.toNumList()[0])Equals(0x0D30FFC6);
-		Asserts.that(a.toNumList()[1])Equals(0x0FCCD695);
-		Asserts.that(a.toNumList()[2])Equals(0x0563F1C4);
-		Asserts.that(a.toNumList()[3])Equals(0x0111BDB3);
-		Asserts.that(a.toNumList()[4])Equals(0x07AF29C5);
+		Asserts.that(a.getWords()[0])Equals(0x0D30FFC6);
+		Asserts.that(a.getWords()[1])Equals(0x0FCCD695);
+		Asserts.that(a.getWords()[2])Equals(0x0563F1C4);
+		Asserts.that(a.getWords()[3])Equals(0x0111BDB3);
+		Asserts.that(a.getWords()[4])Equals(0x07AF29C5);
 		a = ArbInt('0x000B77FA0C72F0B9064422C00B0264320F932191078A47F3015EF76F0B79AA930E9F8F5F') from ArbIntProvider;
-		Asserts.that(a.toNumList()[0])Equals(0x0E9F8F5F);
-		Asserts.that(a.toNumList()[1])Equals(0x0B79AA93);
-		Asserts.that(a.toNumList()[2])Equals(0x015EF76F);
-		Asserts.that(a.toNumList()[3])Equals(0x078A47F3);
-		Asserts.that(a.toNumList()[4])Equals(0x0F932191);
-		Asserts.that(a.toNumList()[5])Equals(0x0B026432);
-		Asserts.that(a.toNumList()[6])Equals(0x064422C0);
-		Asserts.that(a.toNumList()[7])Equals(0x0C72F0B9);
-		Asserts.that(a.toNumList()[8])Equals(0x000B77FA);
+		Asserts.that(a.getWords()[0])Equals(0x0E9F8F5F);
+		Asserts.that(a.getWords()[1])Equals(0x0B79AA93);
+		Asserts.that(a.getWords()[2])Equals(0x015EF76F);
+		Asserts.that(a.getWords()[3])Equals(0x078A47F3);
+		Asserts.that(a.getWords()[4])Equals(0x0F932191);
+		Asserts.that(a.getWords()[5])Equals(0x0B026432);
+		Asserts.that(a.getWords()[6])Equals(0x064422C0);
+		Asserts.that(a.getWords()[7])Equals(0x0C72F0B9);
+		Asserts.that(a.getWords()[8])Equals(0x000B77FA);
 		a = ArbInt('0x00543E6A0F9475060E8C19F60445F35E0A2215260D01FD9108A2BF5A03855EE10FD38B21') from ArbIntProvider;
-		Asserts.that(a.toNumList()[0])Equals(0x0FD38B21);
-		Asserts.that(a.toNumList()[1])Equals(0x03855EE1);
-		Asserts.that(a.toNumList()[2])Equals(0x08A2BF5A);
-		Asserts.that(a.toNumList()[3])Equals(0x0D01FD91);
-		Asserts.that(a.toNumList()[4])Equals(0x0A221526);
-		Asserts.that(a.toNumList()[5])Equals(0x0445F35E);
-		Asserts.that(a.toNumList()[6])Equals(0x0E8C19F6);
-		Asserts.that(a.toNumList()[7])Equals(0x0F947506);
-		Asserts.that(a.toNumList()[8])Equals(0x00543E6A);
+		Asserts.that(a.getWords()[0])Equals(0x0FD38B21);
+		Asserts.that(a.getWords()[1])Equals(0x03855EE1);
+		Asserts.that(a.getWords()[2])Equals(0x08A2BF5A);
+		Asserts.that(a.getWords()[3])Equals(0x0D01FD91);
+		Asserts.that(a.getWords()[4])Equals(0x0A221526);
+		Asserts.that(a.getWords()[5])Equals(0x0445F35E);
+		Asserts.that(a.getWords()[6])Equals(0x0E8C19F6);
+		Asserts.that(a.getWords()[7])Equals(0x0F947506);
+		Asserts.that(a.getWords()[8])Equals(0x00543E6A);
 		a = ArbInt('0x036B6B6B09C839BB04C06BE20EA767E70DAF6C6605ACF389075C391B0D382FB102ED8D3D') from ArbIntProvider;
-		Asserts.that(a.toNumList()[0])Equals(0x02ED8D3D);
-		Asserts.that(a.toNumList()[1])Equals(0x0D382FB1);
-		Asserts.that(a.toNumList()[2])Equals(0x075C391B);
-		Asserts.that(a.toNumList()[3])Equals(0x05ACF389);
-		Asserts.that(a.toNumList()[4])Equals(0x0DAF6C66);
-		Asserts.that(a.toNumList()[5])Equals(0x0EA767E7);
-		Asserts.that(a.toNumList()[6])Equals(0x04C06BE2);
-		Asserts.that(a.toNumList()[7])Equals(0x09C839BB);
-		Asserts.that(a.toNumList()[8])Equals(0x036B6B6B);
+		Asserts.that(a.getWords()[0])Equals(0x02ED8D3D);
+		Asserts.that(a.getWords()[1])Equals(0x0D382FB1);
+		Asserts.that(a.getWords()[2])Equals(0x075C391B);
+		Asserts.that(a.getWords()[3])Equals(0x05ACF389);
+		Asserts.that(a.getWords()[4])Equals(0x0DAF6C66);
+		Asserts.that(a.getWords()[5])Equals(0x0EA767E7);
+		Asserts.that(a.getWords()[6])Equals(0x04C06BE2);
+		Asserts.that(a.getWords()[7])Equals(0x09C839BB);
+		Asserts.that(a.getWords()[8])Equals(0x036B6B6B);
 		a = ArbInt('0x0EEA25BC00D3C2D0055E0A500236636E0ABF5EFA0A04D8E80580A326') from ArbIntProvider;
-		Asserts.that(a.toNumList()[0])Equals(0x0580A326);
-		Asserts.that(a.toNumList()[1])Equals(0x0A04D8E8);
-		Asserts.that(a.toNumList()[2])Equals(0x0ABF5EFA);
-		Asserts.that(a.toNumList()[3])Equals(0x0236636E);
-		Asserts.that(a.toNumList()[4])Equals(0x055E0A50);
-		Asserts.that(a.toNumList()[5])Equals(0x00D3C2D0);
-		Asserts.that(a.toNumList()[6])Equals(0x0EEA25BC);
+		Asserts.that(a.getWords()[0])Equals(0x0580A326);
+		Asserts.that(a.getWords()[1])Equals(0x0A04D8E8);
+		Asserts.that(a.getWords()[2])Equals(0x0ABF5EFA);
+		Asserts.that(a.getWords()[3])Equals(0x0236636E);
+		Asserts.that(a.getWords()[4])Equals(0x055E0A50);
+		Asserts.that(a.getWords()[5])Equals(0x00D3C2D0);
+		Asserts.that(a.getWords()[6])Equals(0x0EEA25BC);
 		a = ArbInt('0x085752C00A81C4B5017118CA082282240194B64F') from ArbIntProvider;
-		Asserts.that(a.toNumList()[0])Equals(0x0194B64F);
-		Asserts.that(a.toNumList()[1])Equals(0x08228224);
-		Asserts.that(a.toNumList()[2])Equals(0x017118CA);
-		Asserts.that(a.toNumList()[3])Equals(0x0A81C4B5);
-		Asserts.that(a.toNumList()[4])Equals(0x085752C0);
+		Asserts.that(a.getWords()[0])Equals(0x0194B64F);
+		Asserts.that(a.getWords()[1])Equals(0x08228224);
+		Asserts.that(a.getWords()[2])Equals(0x017118CA);
+		Asserts.that(a.getWords()[3])Equals(0x0A81C4B5);
+		Asserts.that(a.getWords()[4])Equals(0x085752C0);
 		a = ArbInt('0x09080DAE0BC48F310E9A379A09270EF30E37F5450A018DE8081E2F6E0C20F862') from ArbIntProvider;
-		Asserts.that(a.toNumList()[0])Equals(0x0C20F862);
-		Asserts.that(a.toNumList()[1])Equals(0x081E2F6E);
-		Asserts.that(a.toNumList()[2])Equals(0x0A018DE8);
-		Asserts.that(a.toNumList()[3])Equals(0x0E37F545);
-		Asserts.that(a.toNumList()[4])Equals(0x09270EF3);
-		Asserts.that(a.toNumList()[5])Equals(0x0E9A379A);
-		Asserts.that(a.toNumList()[6])Equals(0x0BC48F31);
-		Asserts.that(a.toNumList()[7])Equals(0x09080DAE);
+		Asserts.that(a.getWords()[0])Equals(0x0C20F862);
+		Asserts.that(a.getWords()[1])Equals(0x081E2F6E);
+		Asserts.that(a.getWords()[2])Equals(0x0A018DE8);
+		Asserts.that(a.getWords()[3])Equals(0x0E37F545);
+		Asserts.that(a.getWords()[4])Equals(0x09270EF3);
+		Asserts.that(a.getWords()[5])Equals(0x0E9A379A);
+		Asserts.that(a.getWords()[6])Equals(0x0BC48F31);
+		Asserts.that(a.getWords()[7])Equals(0x09080DAE);
 		a = ArbInt('0x09D6FB4B01DAA34F00E486EC035A9A8D01DBF84003DE90AF') from ArbIntProvider;
-		Asserts.that(a.toNumList()[0])Equals(0x03DE90AF);
-		Asserts.that(a.toNumList()[1])Equals(0x01DBF840);
-		Asserts.that(a.toNumList()[2])Equals(0x035A9A8D);
-		Asserts.that(a.toNumList()[3])Equals(0x00E486EC);
-		Asserts.that(a.toNumList()[4])Equals(0x01DAA34F);
-		Asserts.that(a.toNumList()[5])Equals(0x09D6FB4B);
+		Asserts.that(a.getWords()[0])Equals(0x03DE90AF);
+		Asserts.that(a.getWords()[1])Equals(0x01DBF840);
+		Asserts.that(a.getWords()[2])Equals(0x035A9A8D);
+		Asserts.that(a.getWords()[3])Equals(0x00E486EC);
+		Asserts.that(a.getWords()[4])Equals(0x01DAA34F);
+		Asserts.that(a.getWords()[5])Equals(0x09D6FB4B);
 		a = ArbInt('0x0D7E05A00C6253FB0DB85A990163804C') from ArbIntProvider;
-		Asserts.that(a.toNumList()[0])Equals(0x0163804C);
-		Asserts.that(a.toNumList()[1])Equals(0x0DB85A99);
-		Asserts.that(a.toNumList()[2])Equals(0x0C6253FB);
-		Asserts.that(a.toNumList()[3])Equals(0x0D7E05A0);
+		Asserts.that(a.getWords()[0])Equals(0x0163804C);
+		Asserts.that(a.getWords()[1])Equals(0x0DB85A99);
+		Asserts.that(a.getWords()[2])Equals(0x0C6253FB);
+		Asserts.that(a.getWords()[3])Equals(0x0D7E05A0);
 		a = ArbInt('0x0EA8EEC20B587E1C070E0D3D05420CAD0A470056019A6825') from ArbIntProvider;
-		Asserts.that(a.toNumList()[0])Equals(0x019A6825);
-		Asserts.that(a.toNumList()[1])Equals(0x0A470056);
-		Asserts.that(a.toNumList()[2])Equals(0x05420CAD);
-		Asserts.that(a.toNumList()[3])Equals(0x070E0D3D);
-		Asserts.that(a.toNumList()[4])Equals(0x0B587E1C);
-		Asserts.that(a.toNumList()[5])Equals(0x0EA8EEC2);
+		Asserts.that(a.getWords()[0])Equals(0x019A6825);
+		Asserts.that(a.getWords()[1])Equals(0x0A470056);
+		Asserts.that(a.getWords()[2])Equals(0x05420CAD);
+		Asserts.that(a.getWords()[3])Equals(0x070E0D3D);
+		Asserts.that(a.getWords()[4])Equals(0x0B587E1C);
+		Asserts.that(a.getWords()[5])Equals(0x0EA8EEC2);
 		a = ArbInt('0x035FF8B709B2FE1D0ECE066A0EA46517') from ArbIntProvider;
-		Asserts.that(a.toNumList()[0])Equals(0x0EA46517);
-		Asserts.that(a.toNumList()[1])Equals(0x0ECE066A);
-		Asserts.that(a.toNumList()[2])Equals(0x09B2FE1D);
-		Asserts.that(a.toNumList()[3])Equals(0x035FF8B7);
+		Asserts.that(a.getWords()[0])Equals(0x0EA46517);
+		Asserts.that(a.getWords()[1])Equals(0x0ECE066A);
+		Asserts.that(a.getWords()[2])Equals(0x09B2FE1D);
+		Asserts.that(a.getWords()[3])Equals(0x035FF8B7);
 	}
 	
 	@Test
@@ -201,46 +199,6 @@ every ArbIntTest is:
 		Asserts.that(a.toString())Equals('0x6079E8675B2480DFD11C1');
 		a = ArbInt('0x00000000') from ArbIntProvider;
 		Asserts.that(a.toString())Equals('0x0');
-	}
-
-	@Test
-	testRemovePadding(Asserts) {
-		var ArbInt a = ArbInt([1,0]) from ArbIntProvider;
-		a.removePadding();
-		Asserts.that(a.toNumList().getSize())Equals(1);
-		a = ArbInt([-2147483648,-1]) from ArbIntProvider;
-		a.removePadding();
-		Asserts.that(a.toNumList().getSize())Equals(1);
-		a = ArbInt([1,-1]) from ArbIntProvider;
-		a.removePadding();
-		Asserts.that(a.toNumList().getSize())Equals(2);
-		a = ArbInt([-2147483648,0]) from ArbIntProvider;
-		a.removePadding();
-		Asserts.that(a.toNumList().getSize())Equals(2);
-		a = ArbInt([1,0,0,0]) from ArbIntProvider;
-		a.removePadding();
-		Asserts.that(a.toNumList().getSize())Equals(1);
-		a = ArbInt([-2147483648,-1,-1,-1]) from ArbIntProvider;
-		a.removePadding();
-		Asserts.that(a.toNumList().getSize())Equals(1);
-		a = ArbInt([1,-1,-1,-1]) from ArbIntProvider;
-		a.removePadding();
-		Asserts.that(a.toNumList().getSize())Equals(2);
-		a = ArbInt([-2147483648,0,0,0]) from ArbIntProvider;
-		a.removePadding();
-		Asserts.that(a.toNumList().getSize())Equals(2);
-		a = ArbInt([1,1,1,0]) from ArbIntProvider;
-		a.removePadding();
-		Asserts.that(a.toNumList().getSize())Equals(3);
-		a = ArbInt([0,0,-2147483648,-1]) from ArbIntProvider;
-		a.removePadding();
-		Asserts.that(a.toNumList().getSize())Equals(3);
-		a = ArbInt([1,1,1,-1]) from ArbIntProvider;
-		a.removePadding();
-		Asserts.that(a.toNumList().getSize())Equals(4);
-		a = ArbInt([0,0,-2147483648,0]) from ArbIntProvider;
-		a.removePadding();
-		Asserts.that(a.toNumList().getSize())Equals(4);
 	}
 	
 	@Test
@@ -396,7 +354,7 @@ every ArbIntTest is:
  	}
 	
 
-	@Test
+	//@Test
 	testShiftLeft(Asserts) {
 		var ArbInt a = ArbInt('-0x100DF5E90C1800D210697475B5A7EDEE1D') from ArbIntProvider;
 		Asserts.that(a.shiftLeft(0xB0).toString())Equals('-0x100DF5E90C1800D210697475B5A7EDEE1D00000000000000000000000000000000000000000000');

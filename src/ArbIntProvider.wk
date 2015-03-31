@@ -20,7 +20,7 @@ every ArbIntProvider is:
     provides 
 		ArbIntBitManipulator,
 		ArbIntProvider <- { return this; },
-		ArbInt <- ArbInt(?Num[]),
+		ArbInt <- ArbInt(?Num[], ArbIntBitManipulator, ArbIntProvider),
         ArbInt <- (Text) {
 			var Num[] = [];
 			var Num i = 0;

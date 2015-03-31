@@ -16,7 +16,7 @@ import ArbIntBitManipulator;
 import ArbIntProvider;
 
 every ArbInt is:
-	
+
 	//ArbInt is an Integer of Arbitrary Size.  It is stored as a Little Endian array of Nums
 	//with 32(?) bit words (and the nums themselves are big endian).
 	//All ArbInts are signed with the twos compliment method.
@@ -68,6 +68,7 @@ every ArbInt is:
 	}
 	
 	Text -- toString() {
+		var Num leftBit = 1 << 31;									//FORCES 32 BIT
 		var Num i = 0;
 		var Num j = 0;
 		var Num rightFourBits = 15;
@@ -76,7 +77,10 @@ every ArbInt is:
 		var Text = "";
 		
 		var Bool sign = false;
-		if ((leftBit & words[words.getSize() - 1]) == leftBit) {
+		if (wordCount() == 0) {
+			return "Error!  Word Count is 0";
+		}
+		if ((leftBit & words[wordCount() - 1]) == leftBit) {
 			sign = true;
 		}
 		

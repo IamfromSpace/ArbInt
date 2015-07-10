@@ -8,12 +8,13 @@
 # See LICENSE.TXT for details
 #
 # Author: Nathan Fairhurst
-# Revised By:
+# Revised By: Michael Fairhurst
 #
 ##
+module arb;
 
-import ArbIntBitManipulator;
-import ArbIntProvider;
+import arb.ArbIntBitManipulator;
+import arb.ArbIntProvider;
 
 every ArbInt is:
 

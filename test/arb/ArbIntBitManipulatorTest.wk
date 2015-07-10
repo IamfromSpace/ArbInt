@@ -8,12 +8,13 @@
 # See LICENSE.TXT for details
 #
 # Author: Nathan Fairhurst
-# Revised By:
+# Revised By: Michael Fairhurst
 #
 ##
+module arb;
 
-import Asserts;
-import ArbIntBitManipulator;
+import wunit.Asserts;
+import arb.ArbIntBitManipulator;
 
 @TestClass
 Every ArbIntBitManipulatorTest is:

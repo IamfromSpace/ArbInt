@@ -8,16 +8,17 @@
 # See LICENSE.TXT for details
 #
 # Author: Nathan Fairhurst
-# Revised By:
+# Revised By: Michael Fairhurst
 #
 ##
+module arb;
 
-import ArbInt;
-import ArbIntBitManipulator;
+import arb.ArbInt;
+import arb.ArbIntBitManipulator;
 
 every ArbIntProvider is:
 
-    provides 
+    provides
 		ArbIntBitManipulator,
 		ArbIntProvider <- { return this; },
 		ArbInt <- ArbInt(?Num[], ArbIntBitManipulator, ArbIntProvider),
@@ -32,10 +33,10 @@ every ArbIntProvider is:
 			if (Text.substr(0,1) == '-') {
 				sign = 1;
 			}
-			
+
 			if (Text.substr(0+sign,2+sign) == '0x') {
 				//String is in Hex
-				
+
 				Text = "0" + Text.substr(2+sign,Text.getSize());
 
 				var Num words = ((Text.getSize()) / 8).ceil();	//FORCES 32 BIT
@@ -62,7 +63,7 @@ every ArbIntProvider is:
 						j+=1;
 					}
 				}
-				
+
 				var Bool = false;
 				if (sign == 1) {
 					for (i = 0; i < Num[].getSize(); i += 1) {
@@ -77,10 +78,10 @@ every ArbIntProvider is:
 						}
 					}
 				}
-				
+
 				var ArbInt = ArbInt(Num[]) from this;
 				//Doesn't remove padding
-				
+
 				return ArbInt;
 			} else {
 				return ArbInt([0]) from this;							//Should throw an Error instead

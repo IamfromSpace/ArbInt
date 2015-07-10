@@ -8,9 +8,11 @@
 # See LICENSE.TXT for details
 #
 # Author: Nathan Fairhurst
-# Revised By:
+# Revised By: Michael Fairhurst
 #
 ##
+
+module arb;
 
 every ArbIntBitManipulator is:
 

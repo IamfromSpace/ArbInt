@@ -22,40 +22,40 @@ Every ArbIntBitManipulatorTest is:
 
 	@Test
 	testRemovePadding(Asserts) {
-		var Num[] a = [1,0];
+		var Int[] a = [1,0];
 		a = aibm.BitremovePadding(a);
 		Asserts.that(a.getSize())Equals(1);
-		var Num[] a = [-2147483648,-1];
+		var Int[] a = [-2147483648,-1];
 		a = aibm.BitremovePadding(a);
 		Asserts.that(a.getSize())Equals(1);
-		var Num[] a = [1,-1];
+		var Int[] a = [1,-1];
 		a = aibm.BitremovePadding(a);
 		Asserts.that(a.getSize())Equals(2);
-		var Num[] a = [-2147483648,0];
+		var Int[] a = [-2147483648,0];
 		a = aibm.BitremovePadding(a);
 		Asserts.that(a.getSize())Equals(2);
-		var Num[] a = [1,0,0,0];
+		var Int[] a = [1,0,0,0];
 		a = aibm.BitremovePadding(a);
 		Asserts.that(a.getSize())Equals(1);
-		var Num[] a = [-2147483648,-1,-1,-1];
+		var Int[] a = [-2147483648,-1,-1,-1];
 		a = aibm.BitremovePadding(a);
 		Asserts.that(a.getSize())Equals(1);
-		var Num[] a = [1,-1,-1,-1];
+		var Int[] a = [1,-1,-1,-1];
 		a = aibm.BitremovePadding(a);
 		Asserts.that(a.getSize())Equals(2);
-		var Num[] a = [-2147483648,0,0,0];
+		var Int[] a = [-2147483648,0,0,0];
 		a = aibm.BitremovePadding(a);
 		Asserts.that(a.getSize())Equals(2);
-		var Num[] a = [1,1,1,0];
+		var Int[] a = [1,1,1,0];
 		a = aibm.BitremovePadding(a);
 		Asserts.that(a.getSize())Equals(3);
-		var Num[] a = [0,0,-2147483648,-1];
+		var Int[] a = [0,0,-2147483648,-1];
 		a = aibm.BitremovePadding(a);
 		Asserts.that(a.getSize())Equals(3);
-		var Num[] a = [1,1,1,-1];
+		var Int[] a = [1,1,1,-1];
 		a = aibm.BitremovePadding(a);
 		Asserts.that(a.getSize())Equals(4);
-		var Num[] a = [0,0,-2147483648,0];
+		var Int[] a = [0,0,-2147483648,0];
 		a = aibm.BitremovePadding(a);
 		Asserts.that(a.getSize())Equals(4);
 	}

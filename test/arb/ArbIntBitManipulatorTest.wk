@@ -17,46 +17,46 @@ import wunit.Asserts;
 import arb.ArbIntBitManipulator;
 
 @TestClass
-Every ArbIntBitManipulatorTest is:
+every ArbIntBitManipulatorTest is:
 
 	needs ArbIntBitManipulator aibm;
 
 	@Test
 	testRemovePadding(Asserts) {
 		var Int[] a = [1,0];
-		a = aibm.BitremovePadding(a);
+		a = aibm.bitremovePadding(a);
 		Asserts.that(a.getSize())Equals(1);
 		var Int[] a = [-2147483648,-1];
-		a = aibm.BitremovePadding(a);
+		a = aibm.bitremovePadding(a);
 		Asserts.that(a.getSize())Equals(1);
 		var Int[] a = [1,-1];
-		a = aibm.BitremovePadding(a);
+		a = aibm.bitremovePadding(a);
 		Asserts.that(a.getSize())Equals(2);
 		var Int[] a = [-2147483648,0];
-		a = aibm.BitremovePadding(a);
+		a = aibm.bitremovePadding(a);
 		Asserts.that(a.getSize())Equals(2);
 		var Int[] a = [1,0,0,0];
-		a = aibm.BitremovePadding(a);
+		a = aibm.bitremovePadding(a);
 		Asserts.that(a.getSize())Equals(1);
 		var Int[] a = [-2147483648,-1,-1,-1];
-		a = aibm.BitremovePadding(a);
+		a = aibm.bitremovePadding(a);
 		Asserts.that(a.getSize())Equals(1);
 		var Int[] a = [1,-1,-1,-1];
-		a = aibm.BitremovePadding(a);
+		a = aibm.bitremovePadding(a);
 		Asserts.that(a.getSize())Equals(2);
 		var Int[] a = [-2147483648,0,0,0];
-		a = aibm.BitremovePadding(a);
+		a = aibm.bitremovePadding(a);
 		Asserts.that(a.getSize())Equals(2);
 		var Int[] a = [1,1,1,0];
-		a = aibm.BitremovePadding(a);
+		a = aibm.bitremovePadding(a);
 		Asserts.that(a.getSize())Equals(3);
 		var Int[] a = [0,0,-2147483648,-1];
-		a = aibm.BitremovePadding(a);
+		a = aibm.bitremovePadding(a);
 		Asserts.that(a.getSize())Equals(3);
 		var Int[] a = [1,1,1,-1];
-		a = aibm.BitremovePadding(a);
+		a = aibm.bitremovePadding(a);
 		Asserts.that(a.getSize())Equals(4);
 		var Int[] a = [0,0,-2147483648,0];
-		a = aibm.BitremovePadding(a);
+		a = aibm.bitremovePadding(a);
 		Asserts.that(a.getSize())Equals(4);
 	}

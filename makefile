@@ -1,7 +1,7 @@
 PROGRAM := ArbInt
 
 # set to false or it will be linked with a main()
-EXECUTABLE := true
+EXECUTABLE := false
 MAINCLASS := yourmodule.Main
 MAINMETHOD := "main()"
 

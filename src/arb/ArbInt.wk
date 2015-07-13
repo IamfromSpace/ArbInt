@@ -101,7 +101,7 @@ every ArbInt is:
 						}
 					}
 				}
-				var Text? nextChar = hexChars.charAt(Int);
+				var Char? nextChar = hexChars.charAt(Int);
 				if nextChar exists {
 					Text = nextChar + Text;
 				}
@@ -110,7 +110,7 @@ every ArbInt is:
 
 		var Int chopAt = Text.getSize()-1;
 		for (i=0; i < Text.getSize(); i+=1) {
-			if (Text.substr(i,i+1) != '0') {
+			if (Text.substr(i,i+1) != '0's) {
 				chopAt = i;
 				break;
 			}

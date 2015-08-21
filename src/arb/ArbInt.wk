@@ -8,74 +8,75 @@
 # See LICENSE.TXT for details
 #
 # Author: Nathan Fairhurst
-# Revised By:
+# Revised By: Michael Fairhurst
 #
 ##
+module arb;
 
-import ArbIntBitManipulator;
-import ArbIntProvider;
+import arb.ArbIntBitManipulator;
+import arb.ArbIntProvider;
 
 every ArbInt is:
 
-	//ArbInt is an Integer of Arbitrary Size.  It is stored as a Little Endian array of Nums
+	//ArbInt is an Integer of Arbitrary Size.  It is stored as a Little Endian array of Ints
 	//with 32(?) bit words (and the nums themselves are big endian).
 	//All ArbInts are signed with the twos compliment method.
 
-	needs Num[] words, ArbIntBitManipulator bitManip, ArbIntProvider prov;
-	
+	needs Int[] words, ArbIntBitManipulator bitManip, ArbIntProvider prov;
+
 	ArbInt -- add(ArbInt other) {
 		return ArbInt(bitManip.removePadding(bitManip.add(words, other.getWords()))) from prov;
 	}
-	
+
 	ArbInt -- mult(ArbInt other) {
 		return ArbInt(bitManip.removePadding(bitManip.mult(words, other.getWords()))) from prov;
 	}
-	
+
 	ArbInt -- bitNot() {
 		return ArbInt(bitManip.bitNot(words)) from prov;
 	}
-	
+
 	ArbInt -- bitAnd(ArbInt other) {
 		return ArbInt(bitManip.removePadding(bitManip.bitAnd(words, other.getWords()))) from prov;
 	}
-	
+
 	ArbInt -- bitOr(ArbInt other) {
 		return ArbInt(bitManip.removePadding(bitManip.bitOr(words, other.getWords()))) from prov;
 	}
-	
+
 	ArbInt -- bitXor(ArbInt other) {
 		return ArbInt(bitManip.removePadding(bitManip.bitXor(words, other.getWords()))) from prov;
 	}
-	
-	ArbInt -- shiftRight(Num amount) {
+
+	ArbInt -- shiftRight(Int amount) {
 		return ArbInt(bitManip.removePadding(bitManip.shiftRight(words, amount))) from prov;
 	}
-	
-	ArbInt -- shiftLeft(Num amount) {
+
+	ArbInt -- shiftLeft(Int amount) {
 		return ArbInt(bitManip.removePadding(bitManip.shiftLeft(words, amount))) from prov;
 	}
-	
-	Num -- wordCount() {
+
+	Int -- wordCount() {
 		return words.getSize();
 	}
 
-	Num[] -- getWords() {
+	Int[] -- getWords() {
 		return words;
 	}
-	
-	Num? -- toNum() {
-		return toString().parseNum();
+
+	Int? -- toInt() {
+		return toString().parseInt();
 	}
-	
+
 	Text -- toString() {
-		var Num leftBit = 1 << 31;									//FORCES 32 BIT
-		var Num i = 0;
-		var Num j = 0;
-		var Num rightFourBits = 15;
+		var Int leftBit = 1 << 31;									//FORCES 32 BIT
+		var Int i = 0;
+		var Int j = 0;
+		var Int rightFourBits = 15;
 		var Text hexChars = '0123456789ABCDEF';
-		
+
 		var Text = "";
-		
+
 		var Bool sign = false;
 		if (wordCount() == 0) {
 			return "Error!  Word Count is 0";
@@ -83,45 +84,45 @@ every ArbInt is:
 		if ((leftBit & words[wordCount() - 1]) == leftBit) {
 			sign = true;
 		}
-		
+
 		var Bool signFixed = false;
-		
+
 		for (i=0; i < words.getSize(); i+=1) {
 			for (j=0; j < 8; j+=1) {								//FORCES 32 BIT
-				var Num = (words[i] >> j*4) & rightFourBits;
+				var Int = (words[i] >> j*4) & rightFourBits;
 				if (sign) {
-					Num = 15 - Num;
+					Int = 15 - Int;
 					if (!(signFixed)) {
-						if (Num == 15) {
-							Num = 0;
+						if (Int == 15) {
+							Int = 0;
 						} else {
-							Num += 1;
+							Int += 1;
 							signFixed = true;
 						}
 					}
 				}
-				var Text? nextChar = hexChars.charAt(Num);
+				var Char? nextChar = hexChars.charAt(Int);
 				if nextChar exists {
 					Text = nextChar + Text;
 				}
 			}
 		}
-		
-		var Num chopAt = Text.getSize()-1;
+
+		var Int chopAt = Text.getSize()-1;
 		for (i=0; i < Text.getSize(); i+=1) {
-			if (Text.substr(i,i+1) != '0') {
+			if (Text.substr(i,i+1) != '0's) {
 				chopAt = i;
 				break;
 			}
 		}
-		
+
 		Text = Text.substr(chopAt,Text.getSize());
-		
+
 		if (sign) {
 			Text = "-0x" + Text;
 		} else {
 			Text = "0x" + Text;
 		}
-		
+
 		return Text;
 	}

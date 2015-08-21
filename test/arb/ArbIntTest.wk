@@ -8,35 +8,36 @@
 # See LICENSE.TXT for details
 #
 # Author: Nathan Fairhurst
-# Revised By:
+# Revised By: Michael Fairhurst
 #
 ##
+module arb;
 
-import Asserts;
-import ArbInt;
-import ArbIntProvider;
+import wunit.Asserts;
+import arb.ArbInt;
+import arb.ArbIntProvider;
 
 @TestClass
 every ArbIntTest is:
 
 	needs ArbIntProvider;
-	
+
 	#>	Depricated, included incase it's useful in the future
 	#	Also, this should really be a helper class if implemented.
 	@Test
-	~[test aGetsLargestNumList]~(Asserts) {
+	~[test aGetsLargestIntList]~(Asserts) {
 		var ArbInt = ArbInt('0x0') from ArbIntProvider;
-		var Num[] a = [];
-		var Num[] b = [];
-		ArbInt.aGetsLargestNumList([0,0],[0],a,b);
+		var Int[] a = [];
+		var Int[] b = [];
+		ArbInt.aGetsLargestIntList([0,0],[0],a,b);
 		Asserts.that(a.getSize() >= b.getSize());
 		a = [];
 		b = [];
-		ArbInt.aGetsLargestNumList([0],[0,0],a,b);
+		ArbInt.aGetsLargestIntList([0],[0,0],a,b);
 		Asserts.that(a.getSize() >= b.getSize());
 		a = [];
 		b = [];
-		ArbInt.aGetsLargestNumList([0,0],[0,0],a,b);
+		ArbInt.aGetsLargestIntList([0,0],[0,0],a,b);
 		Asserts.that(a.getSize() >= b.getSize());
 		Asserts.that(a[0])Equals(0);
 		Asserts.that(a[1])Equals(0);
@@ -44,30 +45,30 @@ every ArbIntTest is:
 		Asserts.that(b[1])Equals(0);
 	}
 	##
-	
+
 	@Test
-	testFromNumArray(Asserts) {
-		var Num i = 0;
-		var Num j = 0;
-		var Num[] = [];
+	testFromIntArray(Asserts) {
+		var Int i = 0;
+		var Int j = 0;
+		var Int[] = [];
 		for (i=0; i<20; i+=1) {
-			Num[].push(i);
-			var ArbInt a = ArbInt(Num[]) from ArbIntProvider;
+			Int[].push(i);
+			var ArbInt a = ArbInt(Int[]) from ArbIntProvider;
 			for (j=0; j<=i; j+=1) {
 				Asserts.that(a.getWords()[j])Equals(j);
 			}
 		}
 	}
-	
+
 	@Test
-	testFromNum(Asserts) {
-		var Num i = 0;
+	testFromInt(Asserts) {
+		var Int i = 0;
 		for (i=9834; i<9854; i+=1) {
 			var ArbInt a = ArbInt(i) from ArbIntProvider;
 			Asserts.that(a.getWords()[0])Equals(i);
 		}
 	}
-	
+
 	@Test
 	testFromString(Asserts) {
 		var ArbInt a = ArbInt('0x07AF29C50111BDB30563F1C40FCCD6950D30FFC6') from ArbIntProvider;
@@ -154,7 +155,7 @@ every ArbIntTest is:
 		Asserts.that(a.getWords()[2])Equals(0x09B2FE1D);
 		Asserts.that(a.getWords()[3])Equals(0x035FF8B7);
 	}
-	
+
 	@Test
 	testToString(Asserts) {
 		var ArbInt a = ArbInt('0xD425A18AC3DE2326') from ArbIntProvider;
@@ -200,7 +201,7 @@ every ArbIntTest is:
 		a = ArbInt('0x00000000') from ArbIntProvider;
 		Asserts.that(a.toString())Equals('0x0');
 	}
-	
+
 	@Test
 	testBitNot(Asserts) {
 		var ArbInt a = ArbInt('0xF8BF6535088277433240B8ABE1') from ArbIntProvider;
@@ -224,7 +225,7 @@ every ArbIntTest is:
 		a = ArbInt('-0xC75B5A64849D84660AFB7') from ArbIntProvider;
 		Asserts.that(a.bitNot().toString())Equals('0xC75B5A64849D84660AFB6');
 	}
-	
+
 	@Test
 	testBitAnd(Asserts) {
 		var ArbInt a = ArbInt('-0xE621FAD52E4442C695EFE8B155AD93038ADA0A0250A2101CBB52190C57489784F2201C5A01334C6A') from ArbIntProvider;
@@ -258,7 +259,7 @@ every ArbIntTest is:
 		b = ArbInt('0x16E0D0DB245F7FE4473') from ArbIntProvider;
 		Asserts.that(a.bitAnd(b).toString())Equals('0x400');
 	}
-	
+
 	@Test
 	testBitOr(Asserts) {
 		var ArbInt a = ArbInt('-0x66DE569552B2F700824FF9263D4DEFC8EA4A9128C745608EC8F3E90E9EDD46274A1') from ArbIntProvider;
@@ -327,7 +328,7 @@ every ArbIntTest is:
 		b = ArbInt('-0xBE080C7B44B64487B6C1DF3A4A') from ArbIntProvider;
 		Asserts.that(a.bitXor(b).toString())Equals('-0x4B1A66227691828DF635F459B06E1E5BBE00C3C9');
 	}
-	
+
 
 	@Test
 	testShiftRight(Asserts) {
@@ -352,7 +353,7 @@ every ArbIntTest is:
 		a = ArbInt('0xEA200702906E01FD1D123BF9A22CC7A5377BA8CED14342E5678A0017D0B4F460DDD274D569DCA74') from ArbIntProvider;
 		Asserts.that(a.shiftRight(0x5).toString())Equals('0x75100381483700FE8E891DFCD11663D29BBDD46768A1A172B3C5000BE85A7A306EE93A6AB4EE53');
  	}
-	
+
 
 	//@Test
 	testShiftLeft(Asserts) {
@@ -377,7 +378,7 @@ every ArbIntTest is:
 		a = ArbInt('-0x5E6A26C3D20E614E570048401CFA8EF9B5C811C8DBDBF8787C3849990B9F410B3EAB') from ArbIntProvider;
 		Asserts.that(a.shiftLeft(0x3).toString())Equals('-0x2F351361E90730A72B8024200E7D477CDAE408E46DEDFC3C3E1C24CC85CFA0859F558');
 	}
-	
+
 	@Test
 	testAdd(Asserts) {
 		var ArbInt a = ArbInt('0x4806B9DB4DCF2DF45631D1A332F3877350C0') from ArbIntProvider;
@@ -441,7 +442,7 @@ every ArbIntTest is:
 		b = ArbInt('0x13703') from ArbIntProvider;
 		Asserts.that(a.add(b).toString())Equals('0x6359533C7410FDCE08BEA');
  	}
-	
+
 	@Test
 	testMult(Asserts) {
 		var ArbInt a = ArbInt('0xABD49F3CD8FAF73199BD9CF6AFA5C648C320610347BBFA5E10') from ArbIntProvider;

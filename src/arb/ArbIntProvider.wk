@@ -8,51 +8,52 @@
 # See LICENSE.TXT for details
 #
 # Author: Nathan Fairhurst
-# Revised By:
+# Revised By: Michael Fairhurst
 #
 ##
+module arb;
 
-import ArbInt;
-import ArbIntBitManipulator;
+import arb.ArbInt;
+import arb.ArbIntBitManipulator;
 
 every ArbIntProvider is:
 
-    provides 
+    provides
 		ArbIntBitManipulator,
 		ArbIntProvider <- { return this; },
-		ArbInt <- ArbInt(?Num[], ArbIntBitManipulator, ArbIntProvider),
+		ArbInt <- ArbInt(?Int[], ArbIntBitManipulator, ArbIntProvider),
         ArbInt <- (Text) {
-			var Num[] = [];
-			var Num i = 0;
-			var Num j = 0;
-			var Num k = 0;
-			var Text hexChars = '0123456789ABCDEF';
+			var Int[] = [];
+			var i = 0;
+			var j = 0;
+			var k = 0;
+			var hexChars = '0123456789ABCDEF';
 
-			var sign Num = 0;
-			if (Text.substr(0,1) == '-') {
+			var sign = 0;
+			if (Text.substr(0,1) == '-'s) {
 				sign = 1;
 			}
-			
+
 			if (Text.substr(0+sign,2+sign) == '0x') {
 				//String is in Hex
-				
+
 				Text = "0" + Text.substr(2+sign,Text.getSize());
 
-				var Num words = ((Text.getSize()) / 8).ceil();	//FORCES 32 BIT
+				var words = ((Text.getSize()) / 8).ceil();	//FORCES 32 BIT
 				for (i = 0; i < words; i+=1) {
-					Num[].push(0);
+					Int[].push(0);
 				}
 
 				Text = Text.toUpper();
 
-				var Num? index = nothing;
+				var index = nothing;
 
 				j = 0;
 				k = 0;
 				for (i = Text.getSize() - 1; i >= 0; i-=1) {
 					index = hexChars.indexOf(Text.substr(i,i+1));
 					if index exists {
-						Num[j] = Num[j] + (index << (k*4));
+						Int[j] = Int[j] + (index << (k*4));
 					} else {
 						return ArbInt([0]) from this;					//Should throw an Error instead
 					}
@@ -62,30 +63,30 @@ every ArbIntProvider is:
 						j+=1;
 					}
 				}
-				
+
 				var Bool = false;
 				if (sign == 1) {
-					for (i = 0; i < Num[].getSize(); i += 1) {
-						Num[i] = ~Num[i];
+					for (i = 0; i < Int[].getSize(); i += 1) {
+						Int[i] = ~Int[i];
 						if (!Bool) {
-							if (Num[i] == -1) {
-								Num[i] = 0;
+							if (Int[i] == -1) {
+								Int[i] = 0;
 							} else {
-								Num[i] += 1;
+								Int[i] += 1;
 								Bool = true;
 							}
 						}
 					}
 				}
-				
-				var ArbInt = ArbInt(Num[]) from this;
+
+				var ArbInt = ArbInt(Int[]) from this;
 				//Doesn't remove padding
-				
+
 				return ArbInt;
 			} else {
 				return ArbInt([0]) from this;							//Should throw an Error instead
 			}
         },
-        ArbInt <- (Num) {
-            return ArbInt([Num]) from this;
+        ArbInt <- (Int) {
+            return ArbInt([Int]) from this;
         };

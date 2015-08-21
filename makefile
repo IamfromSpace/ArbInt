@@ -1,12 +1,16 @@
 PROGRAM := ArbInt
 
 # set to false or it will be linked with a main()
-EXECUTABLE := true
+EXECUTABLE := false
+MAINCLASS := yourmodule.Main
+MAINMETHOD := "main()"
 
 # Include all wake libraries by default since there aren't many just yet
 LIBRARYFILES := $(wildcard lib/obj/*.o)
 LIBRARYTABLES := $(wildcard lib/table/*.table)
-TESTLIBRARYFILES :=
+LIBRARYMODULEFILES := $(wildcard lib/*/obj/*.o)
+LIBRARYMODULETABLES := $(wildcard lib/*/table/*.table)
+
 
 ##
 # You can edit these directories if you wish
@@ -20,6 +24,7 @@ SRCDEPDIR := bin/srcdep
 TESTDEPDIR := bin/testdep
 RUNTESTS := tests
 
+
 ##
 # Use command names based on OS
 ##
@@ -28,9 +33,9 @@ ifeq ($(OS),Windows_NT)
 	NODE := node.exe
 	WUNIT := node.exe wunit-compiler
 	WOCKITO := node.exe wockito-generator
-	MD5SUM := win/md5sums.exe -u
 	WGET := win/wget.exe
 	UNZIP := win/tar.exe -xvf
+	RMR := $(RM) /s
 else
 	WAKE := wake
 	NODE := node
@@ -38,15 +43,15 @@ else
 	WOCKITO := node wockito-generator
 	UNZIP := tar -xvf
 	RM := rm -f
+	RMR := rm -rf
 endif
 ifeq ($(shell uname),Linux)
-	MD5SUM := md5sum
 	WGET := wget
 endif
 ifeq ($(shell uname),Darwin)
-	MD5SUM := md5
 	WGET := curl -o libs-latest.tar
 endif
+
 
 ##
 # Download lib sources if they don't exist
@@ -58,32 +63,36 @@ ifeq ($(strip $(wildcard lib/*)),)
 	FORCESHELL := $(shell mv bundle lib)
 endif
 
+
 ##
 # Gather the current code
 ##
-SOURCEFILES := $(wildcard $(SRCDIR)/*.wk)
-TESTFILES := $(wildcard $(TESTDIR)/*.wk)
-EXTSOURCEFILES := $(wildcard $(SRCDIR)/extern/js/*.wk)
-EXTTESTFILES := $(wildcard $(TESTDIR)/extern/js/*.wk)
+SOURCEFILES := $(wildcard $(SRCDIR)/*.wk) $(wildcard $(SRCDIR)/*/*.wk)
+TESTFILES := $(wildcard $(TESTDIR)/*.wk) $(wildcard $(TESTDIR)/*/*.wk)
+EXTSOURCEFILES := $(wildcard $(SRCDIR)/extern/js/*.wk) $(wildcard $(SRCDIR)/extern/js/*/*.wk)
+EXTTESTFILES := $(wildcard $(TESTDIR)/extern/js/*.wk) $(wildcard $(TESTDIR)/extern/js/*/*.wk)
 
 ##
 # Calculate our artifacts
 ##
-DEPFILES := $(subst $(SRCDIR),$(SRCDEPDIR),${SOURCEFILES:.wk=.d}) $(subst $(TESTDIR),$(TESTDEPDIR),${TESTFILES:.wk=.d}) $(subst $(SRCDIR)/extern/js,$(SRCDEPDIR),${EXTSOURCEFILES:.wk=.d}) $(subst $(TESTDIR)/extern/js,$(TESTDEPDIR),${EXTTESTFILES:.wk=.d})
-OBJECTFILES := $(subst $(SRCDIR),$(OBJECTDIR),${SOURCEFILES:.wk=.o})
-TESTOBJECTFILES := $(subst $(TESTDIR),$(OBJECTDIR),${TESTFILES:.wk=.o})
-TABLEFILES := $(subst $(SRCDIR),$(TABLEDIR),${SOURCEFILES:.wk=.table})
-TESTTABLEFILES := $(subst $(TESTDIR),$(TABLEDIR),${TESTFILES:.wk=.table})
+DEPFILES := ${SOURCEFILES:$(SRCDIR)/%.wk=$(SRCDEPDIR)/%.d} ${TESTFILES:$(TESTDIR)/%.wk=$(TESTDEPDIR)/%.d} ${EXTSOURCEFILES:$(SRCDIR)/extern/js/%.wk=$(SRCDEPDIR)/%.d} ${EXTTESTFILES:$(TESTDIR)/extern/js/%.wk=$(TESTDEPDIR)/%.d}
+OBJECTFILES := ${SOURCEFILES:$(SRCDIR)/%.wk=$(OBJECTDIR)/%.o}
+TESTOBJECTFILES := ${TESTFILES:$(TESTDIR)/%.wk=$(OBJECTDIR)/%.o}
+TABLEFILES := ${SOURCEFILES:$(SRCDIR)/%.wk=$(TABLEDIR)/%.table}
+TESTTABLEFILES := ${TESTFILES:$(TESTDIR)/%.wk=$(TABLEDIR)/%.table}
 
-EXTOBJECTFILES := $(subst $(SRCDIR)/extern/js,$(OBJECTDIR),${EXTSOURCEFILES:.wk=.o})
-EXTTESTOBJECTFILES := $(subst $(TESTDIR)/extern/js,$(OBJECTDIR),${EXTTESTFILES:.wk=.o})
-EXTTABLEFILES := $(subst $(SRCDIR)/extern/js,$(TABLEDIR),${EXTSOURCEFILES:.wk=.table})
-EXTTESTTABLEFILES := $(subst $(TESTDIR)/extern/js,$(TABLEDIR),${EXTTESTFILES:.wk=.table})
+EXTOBJECTFILES := ${EXTSOURCEFILES:$(SRCDIR)/extern/js/%.wk=$(OBJECTDIR)/%.o}
+EXTTESTOBJECTFILES := ${EXTTESTFILES:$(TESTDIR)/extern/js/%.wk=$(OBJECTDIR)/%.o}
+EXTTABLEFILES := ${EXTSOURCEFILES:$(SRCDIR)/extern/js/%.wk=$(TABLEDIR)/%.table}
+EXTTESTTABLEFILES := ${EXTTESTFILES:$(TESTDIR)/extern/js/%.wk=$(TABLEDIR)/%.table}
 
 
 ## ENTRY POINT ##
+ifeq ($(EXECUTABLE), true)
 all: bin/$(PROGRAM)
-
+else
+all: package
+endif
 
 ##
 # Include dynamic makefiles generated for each source file
@@ -97,22 +106,31 @@ ifneq "$(MAKECMDGOALS)" "clean"
 -include $(DEPFILES)
 endif
 
+
 ##
 # Calculate the mock artifacts based on what our dynamic
 # makefiles counted.
 ##
-MOCKOBJECTFILES := $(subst .table.md5,.o,$(subst $(TABLEDIR),$(OBJECTDIR),$(MOCKS)))
-MOCKCLASSNAMES := $(subst Mock.table.md5,,$(subst $(TABLEDIR)/,,$(MOCKS)))
+MOCKOBJECTFILES := $(subst .table,.o,$(subst $(TABLEDIR),$(OBJECTDIR),$(MOCKS)))
+MOCKCLASSNAMES := $(MOCKS:$(TABLEDIR)/%Mock.table=%)
 # only link MockProvider if we have at least one mock
 ifneq ($(MOCKCLASSNAMES),)
-	MOCKPROVIDEROBJ := $(OBJECTDIR)/MockProvider.o
+	MOCKPROVIDEROBJ := $(OBJECTDIR)/wkto.gen/MockProvider.o
 endif
 
+## Build a package ##
+package: $(OBJECTFILES) $(TABLEFILES) $(RUNTESTS) $(EXTOBJECTFILES) $(EXTTABLEFILES)
+	#@echo $(foreach module,$(subst $(OBJECTDIR)/,,$(wildcard $(OBJECTDIR)/*)), \
+		#$(shell mkdir bin/packages/$(module)) \
+		#$(shell mkdir bin/packages/$(module)/obj) \
+		#$(shell mkdir bin/packages/$(module)/table) \
+		#$(shell cp $(TABLEDIR)/$(module)/*.table bin/packages/$(module)/table) \
+		#$(shell cp $(OBJECTDIR)/$(module)/*.o bin/packages/$(module)/obj))
+
 ## Compile our main executable ##
-bin/$(PROGRAM): $(OBJECTFILES) $(TABLEFILES) $(LIBRARYFILES) $(RUNTESTS) $(EXTOBJECTFILES) $(EXTTABLEFILES)
-ifeq ($(EXECUTABLE), true)
-		$(WAKE) -l -d $(TABLEDIR) -o bin/$(PROGRAM) $(OBJECTFILES) $(LIBRARYFILES) $(EXTOBJECTFILES)
-endif
+bin/$(PROGRAM): $(OBJECTFILES) $(TABLEFILES) $(LIBRARYFILES) $(LIBRARYMODULEFILES) $(RUNTESTS) $(EXTOBJECTFILES) $(EXTTABLEFILES)
+	$(WAKE) -l -d $(TABLEDIR) $(OBJECTFILES) $(LIBRARYFILES) $(LIBRARYMODULEFILES) $(EXTOBJECTFILES) -c $(MAINCLASS) -m $(MAINMETHOD) -o bin/$(PROGRAM)
+
 
 ##
 # Run test suite. The test suite is built whenever any source files or
@@ -123,22 +141,11 @@ endif
 tests: bin/$(PROGRAM)-test
 	$(NODE) bin/$(PROGRAM)-test
 
-bin/$(PROGRAM)-test: $(OBJECTFILES) $(TESTLIBRARYFILES) $(LIBRARYFILES) $(TABLEFILES) $(TESTOBJECTFILES) $(TESTTABLEFILES) $(EXTOBJECTFILES) $(EXTTESTOBJECTFILES) $(EXTTABLEFILES) $(EXTTESTTABLEFILES)
+bin/$(PROGRAM)-test: $(OBJECTFILES) $(TESTLIBRARYFILES) $(LIBRARYFILES) $(LIBRARYMODULEFILES) $(TABLEFILES) $(TESTOBJECTFILES) $(TESTTABLEFILES) $(EXTOBJECTFILES) $(EXTTESTOBJECTFILES) $(EXTTABLEFILES) $(EXTTESTTABLEFILES)
 	$(WUNIT)
 	$(WAKE) bin/TestSuite.wk -d $(TABLEDIR) -o bin/TestSuite.o
-	$(WAKE) -l -d $(TABLEDIR) $(OBJECTFILES) $(TESTOBJECTFILES) $(EXTOBJECTFILES) $(EXTTESTOBJECTFILES) $(TESTLIBRARYFILES) $(LIBRARYFILES) $(MOCKOBJECTFILES) $(MOCKPROVIDEROBJ) bin/TestSuite.o -o bin/$(PROGRAM)-test -c TestSuite -m 'tests()'
+	$(WAKE) -l -d $(TABLEDIR) $(OBJECTFILES) $(TESTOBJECTFILES) $(EXTOBJECTFILES) $(EXTTESTOBJECTFILES) $(TESTLIBRARYFILES) $(LIBRARYFILES) $(LIBRARYMODULEFILES) $(MOCKOBJECTFILES) $(MOCKPROVIDEROBJ) bin/TestSuite.o -o bin/$(PROGRAM)-test -c TestSuite -m 'tests()'
 
-##
-# MD5 features. This lets make decide not to rebuild sources that depend
-# on other sources which changed, but only when the interface of that source
-# also changed.
-##
-to-md5 = $1 $(addsuffix .md5,$1)
-
-%.md5: % FORCE
-	@$(if $(filter-out $(shell cat $@ 2>/dev/null),$(shell $(MD5SUM) $*)),$(MD5SUM) $* > $@)
-
-FORCE:
 
 ##
 # Copy our library table files into our table dir
@@ -146,44 +153,44 @@ FORCE:
 $(addprefix $(TABLEDIR)/,$(notdir $(LIBRARYTABLES))): $(LIBRARYTABLES)
 	cp $(LIBRARYTABLES) $(TABLEDIR)
 
+$(addprefix $(TABLEDIR)/,$(subst /table,,$(subst lib/,,$(LIBRARYMODULETABLES:/table/=)))): $(LIBRARYMODULETABLES)
+	@echo $(foreach module,$(filter-out lib/obj lib/table,$(wildcard lib/*)),$(shell mkdir $(TABLEDIR)/$(notdir $(module))) $(shell cp $(wildcard $(module)/table/*) $(TABLEDIR)/$(notdir $(module))))
+
+
 ##
 # Generate the dynamic makefiles that determine compilation
 # order and mock creation
 ##
 $(SRCDEPDIR)/%.d: $(SRCDIR)/%.wk
-	@$(NODE) generate-makefile $< $(TABLEDIR) > $@
+	@mkdir $(dir $@) 2>/dev/null || :
+	@mkdir $(OBJECTDIR)/$(dir $*) 2>/dev/null || :
+	@$(NODE) generate-makefile $< $(TABLEDIR) > $@ $(SRCDIR)
 
 $(TESTDEPDIR)/%.d: $(TESTDIR)/%.wk
-	@$(NODE) generate-makefile $< $(TABLEDIR) > $@
+	@mkdir $(dir $@) 2>/dev/null || :
+	@mkdir $(OBJECTDIR)/$(dir $*) 2>/dev/null || :
+	@$(NODE) generate-makefile $< $(TABLEDIR) > $@ $(TESTDIR)
 
 $(SRCDEPDIR)/%.d: $(SRCDIR)/extern/js/%.wk
-	@$(NODE) generate-makefile $< $(TABLEDIR) > $@
+	@$(NODE) generate-makefile $< $(TABLEDIR) > $@ $(SRCDIR)/extern/js
 
 $(TESTDEPDIR)/%.d: $(TESTDIR)/extern/js/%.wk
-	@$(NODE) generate-makefile $< $(TABLEDIR) > $@
+	@$(NODE) generate-makefile $< $(TABLEDIR) > $@ $(TESTDIR)/extern/js
+
 
 ##
 # Wake compiler commands
 ##
-$(OBJECTDIR)/%.o: $(SRCDIR)/%.wk
-	$(WAKE) $< -d $(TABLEDIR) -o $@
-
-$(OBJECTDIR)/%Test.o: $(TESTDIR)/%Test.wk
-	$(WAKE) $< -d $(TABLEDIR) -o $@
-
-##
-# Don't do anything, but tell make that .table files are created with .o files
-##
-$(TABLEDIR)/%Test.table: $(TESTDIR)/%Test.wk $(OBJECTDIR)/%Test.o
-	@:
-
-$(TABLEDIR)/%.table: $(SRCDIR)/%.wk $(OBJECTDIR)/%.o
-	@:
+#$(OBJECTDIR)/%.o $(TABLEDIR)/%.table : $(SRCDIR)/%.wk
+#	$(WAKE) $< -d $(TABLEDIR) -o $@
+#
+#$(OBJECTDIR)/%.o $(TABLEDIR)/%.table : $(TESTDIR)/%.wk
+#	$(WAKE) $< -d $(TABLEDIR) -o $@
 
 ##
 # Extern classes need the table file, then are generated by a command named in the directory
 ##
-$(TABLEDIR)/%Test.table: $(TESTDIR)/extern/js/%Test.wk
+$(TABLEDIR)/%.table: $(TESTDIR)/extern/js/%.wk
 	$(WAKE) $< -d $(TABLEDIR) -t
 
 $(TABLEDIR)/%.table: $(SRCDIR)/extern/js/%.wk
@@ -192,8 +199,9 @@ $(TABLEDIR)/%.table: $(SRCDIR)/extern/js/%.wk
 $(OBJECTDIR)/%.o: $(TABLEDIR)/%.table $(SRCDIR)/extern/js/%.wk
 	$(NODE) wake-js-gen $< $@
 
-$(OBJECTDIR)/%Test.o: $(TABLEDIR)/%.table $(TESTDIR)/extern/js/%Test.wk
+$(OBJECTDIR)/%.o: $(TABLEDIR)/%.table $(TESTDIR)/extern/js/%.wk
 	$(NODE) wake-js-gen $< $@
+
 
 ##
 # Compile our mocks. This first rule generates a .o file and three
@@ -201,6 +209,8 @@ $(OBJECTDIR)/%Test.o: $(TABLEDIR)/%.table $(TESTDIR)/extern/js/%Test.wk
 # are made when the .o file is made.
 ##
 $(OBJECTDIR)/%Mock.o: $(GENDIR)/%Mock.wk
+	@mkdir $(dir $@) 2>/dev/null || :
+	@mkdir $(OBJECTDIR)/$(dir $*) 2>/dev/null || :
 	$(WAKE) $< -d $(TABLEDIR) -o $@
 
 $(TABLEDIR)/%Mock.table: $(GENDIR)/%Mock.wk $(OBJECTDIR)/%Mock.o
@@ -215,31 +225,37 @@ $(TABLEDIR)/%Verifier.table: $(OBJECTDIR)/%Mock.o
 ##
 # Mock source generation
 ##
-$(GENDIR)/%Mock.wk: $(TABLEDIR)/%.table.md5
-	$(WOCKITO) -d $(TABLEDIR) -o $@ $*
+$(GENDIR)/wkto.gen.%Mock.wk: $(TABLEDIR)/%.table
+	$(WOCKITO) -d $(TABLEDIR) $(subst /,.,$*) -o $@
 
-$(GENDIR)/MockProvider.wk: $(MOCKS)
-	$(WOCKITO) -p -d $(TABLEDIR) -o $@ $(MOCKCLASSNAMES)
+$(GENDIR)/wkto.gen/%Mock.wk: $(TABLEDIR)/%.table
+	$(WOCKITO) -d $(TABLEDIR) $(subst /,.,$*) -o $@
+
+$(GENDIR)/wkto.gen/MockProvider.wk: $(MOCKS)
+	$(WOCKITO) -p -d $(TABLEDIR) $(MOCKCLASSNAMES) -o $@
+
 
 ##
 # Mock provider compilation
 ##
-$(OBJECTDIR)/MockProvider.o: $(GENDIR)/MockProvider.wk
+$(OBJECTDIR)/wkto.gen/MockProvider.o: $(GENDIR)/wkto.gen/MockProvider.wk
+	@mkdir $(dir $@) 2>/dev/null || :
+	@mkdir $(OBJECTDIR)/$(dir $*) 2>/dev/null || :
 	$(WAKE) $< -d $(TABLEDIR) -o $@
 
-$(TABLEDIR)/MockProvider.table: $(OBJECTDIR)/MockProvider.o
+$(TABLEDIR)/wkto.gen/MockProvider.table: $(OBJECTDIR)/wkto.gen/MockProvider.o
+
 
 ##
 # And clean up after our selves. Woo!
 ##
 clean:
-	$(RM) $(TABLEDIR)/* || :
-	$(RM) $(SRCDEPDIR)/* || :
-	$(RM) $(TESTDEPDIR)/* || :
-	$(RM) $(OBJECTDIR)/* || :
+	$(RMR) $(TABLEDIR)/* || :
+	$(RMR) $(SRCDEPDIR)/* || :
+	$(RMR) $(TESTDEPDIR)/* || :
+	$(RMR) $(OBJECTDIR)/* || :
 	$(RM) bin/TestSuite.wk || :
 	$(RM) bin/TestSuite.o || :
-	$(RM) bin/$(PROGRAM) || :
-	$(RM) bin/$(PROGRAM)-test || :
-	$(RM) $(GENDIR)/* || :
-	find . -name '*.md5' -delete
+	$(RMR) bin/$(PROGRAM) || :
+	$(RMR) bin/$(PROGRAM)-test || :
+	$(RMR) $(GENDIR)/* || :

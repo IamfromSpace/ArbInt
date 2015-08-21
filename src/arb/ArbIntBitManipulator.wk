@@ -8,33 +8,35 @@
 # See LICENSE.TXT for details
 #
 # Author: Nathan Fairhurst
-# Revised By:
+# Revised By: Michael Fairhurst
 #
 ##
 
-every ArbIntBitManipulator is:
-	
-	with Num leftBit = 1 << 31;										//FORCES 32 BIT
-	with Num rightBit = 1;
+module arb;
 
-	Num[] -- add(Num[] a, Num[] b) {
+every ArbIntBitManipulator is:
+
+	with Int leftBit = 1 << 31;										//FORCES 32 BIT
+	with Int rightBit = 1;
+
+	Int[] -- add(Int[] a, Int[] b) {
 		//Addition with only bitwise operators is fairly simple
 		//First, a ^ b naively sums a, b, but ignores when the 1 is carried.
 		//Then, (a & b) << 1 is the carried result, previously ignored.
 		//Then this processes is repeated, adding our naive sum and our carry result
 		//We iterate until there's nothing to carry, and we're done!
 		//It does get a bit more complicated when we need to manage multiple words...
-		
-		var sum Num[] = [];
-		var carry Num[] = [];
-		var prevSum Num[] = [];
-		
-		var Num i = 0;
-		var Num j = 0;
-		
+
+		var sum Int[] = [];
+		var carry Int[] = [];
+		var prevSum Int[] = [];
+
+		var i = 0;
+		var j = 0;
+
 		//First, determine the largest ArbInt, we'll need to make all our ArbInts this size + 1
-		var Num mostWords = a.getSize().orMaxOf(b.getSize());
-		
+		var mostWords = a.getSize().orMaxOf(b.getSize());
+
 		//Create prevSum and get our first sum & carry result (don't bitshift carry)
 		for (i = 0; i < mostWords; i += 1) {
 			if (i >= a.getSize()) {
@@ -59,7 +61,7 @@ every ArbIntBitManipulator is:
 			}
 			prevSum.push(0);
 		}
-		
+
 		//add one extra word in case of overflow (ex 1000 + 1000 = 0000 0001)
 		//the extra word needs to be filled with the sign of the number
 		//so its value will not be altered.
@@ -74,7 +76,7 @@ every ArbIntBitManipulator is:
 			carry.push(0);
 		}
 		prevSum.push(0);
-		
+
 		//for each carry word, starting at the smallest
 		for (i = 0; i <= mostWords; i+=1) {
 			//continue adding and carrying until the next smallest carry word is zero
@@ -88,7 +90,7 @@ every ArbIntBitManipulator is:
 						carry[j] = carry[j] | rightBit;
 					}
 				}
-				
+
 				//sum and carry each word that isn't finished
 				//but don't bitshift the carry yet
 				for (j = i; j <= mostWords; j+=1) {
@@ -98,17 +100,17 @@ every ArbIntBitManipulator is:
 				}
 			}
 		}
-		
+
 		return sum;
 	}
-	
-	Num[] -- mult(Num[] a, Num[] b) {
-		var Num i = 0;
-		var Num j = 0;
-		var Num testBit = 0;
-		
-		var Num[] result = [0];
-		
+
+	Int[] -- mult(Int[] a, Int[] b) {
+		var i = 0;
+		var j = 0;
+		var testBit = 0;
+
+		var result = [0];
+
 		for (i=0; i<a.getSize(); i+=1) {
 			for (j=0; j<32; j+=1) {
 				testBit = 1 << j;
@@ -117,42 +119,42 @@ every ArbIntBitManipulator is:
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
-	Num[] -- bitNot(Num[]) {
-		var $Num[] = [];
-		for (var Num i=0; i<Num[].getSize();i+=1) {
-			$Num[].push(~Num[i]);
+
+	Int[] -- bitNot(Int[]) {
+		var $Int[] = [];
+		for (var i=0; i<Int[].getSize();i+=1) {
+			$Int[].push(~Int[i]);
 		}
-		return $Num[];
+		return $Int[];
 	}
-	
+
 	//Bug where -1 is accessed in a list
-	Num[] -- bitGate(Num[], $Num[], Num -- fn(Num, Num) op) {
+	Int[] -- bitGate(Int[], $Int[], Int -- fn(Int, Int) op) {
 		//Uses Closures for code reuse.  Intended for any two input bitwise logic gate.
-		var Num i = 0;
-		
-		var Num[] a = [];
-		var Num[] b = [];
-		var Num[] result = [];
-		
-		if (Num[].getSize() >= $Num[].getSize()) {
-			a = Num[];
-			b = $Num[];
+		var i = 0;
+
+		var Int[] a = [];
+		var Int[] b = [];
+		var Int[] result = [];
+
+		if (Int[].getSize() >= $Int[].getSize()) {
+			a = Int[];
+			b = $Int[];
 		} else {
-			a = $Num[];
-			b = Num[];
+			a = $Int[];
+			b = Int[];
 		}
-		
-		var Num mostWords = a.getSize();
-		
-		var Num pad = 0;
+
+		var mostWords = a.getSize();
+
+		var pad = 0;
 		if ((b[b.getSize()-1] & leftBit) == leftBit) {
 			pad = -1;
 		}
-		
+
 		for (i=0; i<mostWords; i+=1) {
 			if (i < b.getSize()) {
 				result.push(op(a[i], b[i]));
@@ -163,80 +165,80 @@ every ArbIntBitManipulator is:
 
 		return result;
 	}
-	
-	Num[] -- bitAnd(Num[], $Num[]) {
-		return bitGate(Num[], $Num[], {a, b => a & b});
+
+	Int[] -- bitAnd(Int[], $Int[]) {
+		return bitGate(Int[], $Int[], {a, b => a & b});
 	}
-	
-	Num[] -- bitOr(Num[], $Num[]) {
-		return bitGate(Num[], $Num[], {a, b => a | b});
+
+	Int[] -- bitOr(Int[], $Int[]) {
+		return bitGate(Int[], $Int[], {a, b => a | b});
 	}
-	
-	Num[] -- bitXor(Num[], $Num[]) {
-		return bitGate(Num[], $Num[], {a, b => a ^ b});
+
+	Int[] -- bitXor(Int[], $Int[]) {
+		return bitGate(Int[], $Int[], {a, b => a ^ b});
 	}
-	
-	Num[] -- shiftRight(Num[], Num amount) {
-		var Num i = 0;
-		
-		var Num[] shifted = [];
-		
-		var Num pad = 0;
-		if ((leftBit & Num[Num[].getSize() - 1]) == leftBit) {
+
+	Int[] -- shiftRight(Int[], Int amount) {
+		var i = 0;
+
+		var Int[] shifted = [];
+
+		var pad = 0;
+		if ((leftBit & Int[Int[].getSize() - 1]) == leftBit) {
 			pad = -1;
 		}
-	
-		var Num wordShift = (amount / 32).floor();					//FORCES 32 BIT
-		if (wordShift < Num[].getSize()) {
-			var Num bitShift = amount % 32;							//FORCES 32 BIT
-			var Num opBitShift = 0;
-			var Num mask = 0;
+
+		var wordShift = amount >> 5;							//FORCES 32 BIT
+		if (wordShift < Int[].getSize()) {
+			var bitShift = amount % 32;							//FORCES 32 BIT
+			var opBitShift = 0;
+			var mask = 0;
 			if (bitShift != 0) {
 				opBitShift = 32 - bitShift;
 				mask = ~(-1 << (opBitShift));
 			}
 
-			for (i=0; i<Num[].getSize(); i+=1) {
-				shifted.push(Num[i]);
+			for (i=0; i<Int[].getSize(); i+=1) {
+				shifted.push(Int[i]);
 			}
 
 			shifted.push(pad);
-		
-			for (i=0; i<Num[].getSize()-wordShift; i+=1) {
+
+			for (i=0; i<Int[].getSize()-wordShift; i+=1) {
 				shifted[i] = (shifted[i+wordShift] >> bitShift) & mask;
 				shifted[i] = shifted[i] | (shifted[i+wordShift+1] << (opBitShift));
 			}
-			for (i=Num[].getSize()-wordShift; i<Num[].getSize(); i+=1) {
+			for (i=Int[].getSize()-wordShift; i<Int[].getSize(); i+=1) {
 				shifted[i] = pad;
 			}
 		} else {
 			shifted = [pad];
 		}
-		
+
 		return shifted;
 	}
-	
+
 	//Bug where -1 is accessed in a list
-	Num[] -- shiftLeft(Num[], Num amount) {
-		var Num i = 0;
-		
-		var Num[] shifted = [];
-		
-		var Num pad = 0;
-		if ((leftBit & Num[Num[].getSize() - 1]) == leftBit) {
+	Int[] -- shiftLeft(Int[], Int amount) {
+		var i = 0;
+
+		var Int[] shifted = [];
+
+		var pad = 0;
+		if ((leftBit & Int[Int[].getSize() - 1]) == leftBit) {
 			pad = -1;
 		}
-	
-		var Num wordShift = (amount / 32).floor();					//FORCES 32 BIT
-		var Num bitShift = amount % 32;								//FORCES 32 BIT
-		var Num mask = ~(-1 << bitShift);
-		var Num opBitShift = 0;
+
+		var wordShift = amount >> 5;							//FORCES 32 BIT
+		var bitShift = amount % 32;								//FORCES 32 BIT
+		var mask = ~(-1 << bitShift);
+		var opBitShift = 0;
 		if (bitShift !=0) {
 			opBitShift = 32 - bitShift;
 		}
 
-		for (i=0; i<Num[].getSize(); i+=1) {
-			shifted.push(Num[i]);
+		for (i=0; i<Int[].getSize(); i+=1) {
+			shifted.push(Int[i]);
 		}
 
 		for (i=0; i<wordShift+1; i+=1) {
@@ -252,23 +254,23 @@ every ArbIntBitManipulator is:
 		for (i=wordShift-1; i>=0; i-=1) {
 			shifted[i] = 0;
 		}
-		
+
 		return shifted;
 	}
-	
-	Num[] -- removePadding(Num[]) {
-		var Num i = 0;
-		
-		var Num wordCount = Num[].getSize();
-		var Num[] result = [];
-		
+
+	Int[] -- removePadding(Int[]) {
+		var i = 0;
+
+		var wordCount = Int[].getSize();
+		var Int[] result = [];
+
 		//Crop off any unecessary words that contain all 0s or all 1s
-		if ((Num[wordCount - 1] == -1) || (Num[wordCount - 1] == 0)) {
-			var Num chopAt = 0;
+		if ((Int[wordCount - 1] == -1) || (Int[wordCount - 1] == 0)) {
+			var chopAt = 0;
 			for (i = wordCount -1; i >= 0; i-=1) {
-				if ((Num[i] != Num[wordCount-1])) {
+				if ((Int[i] != Int[wordCount-1])) {
 					//Be sure that the "unecessary" word doesn't contain the sign bit
-					if (((Num[i] ^ Num[wordCount - 1]) & leftBit) == leftBit) {
+					if (((Int[i] ^ Int[wordCount - 1]) & leftBit) == leftBit) {
 						chopAt = i+1;
 					} else {
 						chopAt = i;
@@ -277,7 +279,7 @@ every ArbIntBitManipulator is:
 				}
 			}
 			for (i = 0; i <= chopAt; i+=1) {
-				result.push(Num[i]);
+				result.push(Int[i]);
 			}
 		}
 		return result;
